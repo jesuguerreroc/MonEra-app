@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Un movimiento válido: monto entero positivo, tipo permitido, cuentas coherentes
+    function validTx(d) {
+      return d.type in ['expense', 'income', 'transfer']
+        && d.amount is int && d.amount > 0 && d.amount < 1000000000000
+        && d.accountId is string
+        && d.date is string && d.date.size() == 10
+        && d.description is string && d.description.size() <= 120
+        && (d.type != 'transfer' || (d.toAccountId is string && d.toAccountId != d.accountId));
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // Movimientos: validados al crear/editar
+      match /transactions/{id} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validTx(request.resource.data);
+      }
+
+      // Resto de colecciones del usuario
+      match /{coll}/{id} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && coll in ['accounts', 'categories', 'debts', 'receivables', 'budgets', 'goals'];
+      }
+    }
+
+    // Todo lo demás está cerrado
+  }
+}
