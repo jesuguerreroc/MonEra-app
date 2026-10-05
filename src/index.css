@@ -62,19 +62,15 @@ body {
 .animate-sheet { animation: sheet .24s cubic-bezier(.2, .8, .2, 1) }
 .animate-rise { animation: rise .28s ease-out both }
 
-/* Alcancía MonEra: la moneda cae en la ranura y el cerdito rebota */
-.pig-animated .pig-coin { animation: pig-coin 3.2s cubic-bezier(.5, 0, .5, 1) infinite }
-.pig-animated .pig-body { transform-box: fill-box; transform-origin: 50% 100%; animation: pig-body 3.2s ease-in-out infinite }
-@keyframes pig-coin {
-  0% { transform: translateY(-10px); opacity: 0 }
-  15%, 50% { transform: translateY(0); opacity: 1 }
-  70%, 100% { transform: translateY(24px); opacity: 1 }
-}
-@keyframes pig-body {
-  0%, 64%, 100% { transform: none }
-  70% { transform: scale(1.04, .96) }
-  78% { transform: scale(.98, 1.02) }
-  86% { transform: none }
+/* Logo MonEra: la gota cae desde la ola y rebota al llegar */
+.logo-animated .logo-drop { transform-box: fill-box; transform-origin: 50% 100%; animation: logo-drop 3.2s ease-in-out infinite }
+@keyframes logo-drop {
+  0% { transform: translate(-1px, -9px) scale(.25); opacity: 0 }
+  22% { transform: none; opacity: 1 }
+  28% { transform: scale(1.1, .88) }
+  36% { transform: scale(.97, 1.04) }
+  44%, 86% { transform: none; opacity: 1 }
+  100% { transform: none; opacity: 0 }
 }
 
 /* Login: manchas de color que flotan y tarjetas de vista previa */

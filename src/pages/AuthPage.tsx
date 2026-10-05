@@ -3,7 +3,7 @@ import { AlertCircle, ArrowDownLeft, ArrowLeft, CheckCircle2, Eye, EyeOff, Lock,
 import { authErrorMessage, useAuth } from '../context/AuthContext'
 import { Button } from '../components/ui/Button'
 import { inputCls } from '../components/ui/Field'
-import { PigLogo } from '../components/ui/PigLogo'
+import { Logo } from '../components/ui/Logo'
 import { ThemeToggle } from '../components/ui/ThemeToggle'
 import { cn } from '../utils/cn'
 
@@ -64,7 +64,7 @@ export default function AuthPage() {
       <header className={cn('lg:hidden relative overflow-hidden text-white text-center px-6 pb-16 pt-[max(3rem,calc(env(safe-area-inset-top)+2rem))]', BRAND_BG)}>
         <Blobs />
         <div className="relative animate-rise">
-          <PigLogo size={84} animated className="mx-auto drop-shadow-[0_12px_24px_rgba(20,10,60,.35)]" />
+          <Logo size={84} animated className="mx-auto drop-shadow-[0_12px_24px_rgba(20,10,60,.35)]" />
           <p className="text-3xl font-extrabold tracking-tight mt-3">MonEra</p>
           <p className="text-white/75 text-sm mt-1">Tus finanzas, fluyendo sin esfuerzo.</p>
         </div>
@@ -197,7 +197,7 @@ function BrandPanel() {
       <Blobs />
 
       <div className="relative flex items-center gap-3">
-        <PigLogo size={46} />
+        <Logo size={46} className="drop-shadow-[0_8px_18px_rgba(20,10,60,.4)]" />
         <span className="text-2xl font-extrabold tracking-tight">MonEra</span>
       </div>
 

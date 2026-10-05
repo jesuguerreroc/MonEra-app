@@ -14,12 +14,12 @@ import Goals from './pages/Goals'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import More from './pages/More'
-import { PigLogo } from './components/ui/PigLogo'
+import { Logo } from './components/ui/Logo'
 
 function Splash() {
   return (
     <div className="min-h-dvh grid place-items-center" role="status" aria-label="Cargando MonEra">
-      <PigLogo size={88} animated />
+      <Logo size={88} animated />
     </div>
   )
 }

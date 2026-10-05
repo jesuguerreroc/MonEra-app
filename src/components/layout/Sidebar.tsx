@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { Moon, Plus, Sun } from 'lucide-react'
 import { MAIN_NAV } from './nav'
-import { PigLogo } from '../ui/PigLogo'
+import { Logo } from '../ui/Logo'
 import { useUI } from '../../context/UIContext'
 import { useTheme } from '../../context/ThemeContext'
 import { cn } from '../../utils/cn'
@@ -14,7 +14,7 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex sticky top-0 h-dvh w-[76px] lg:w-64 shrink-0 flex-col gap-2 border-r border-line bg-surface p-3 lg:p-4">
       <div className="flex items-center gap-3 px-1 py-2 lg:px-2">
-        <PigLogo size={40} animated />
+        <Logo size={40} animated />
         <span className="hidden lg:block text-2xl font-extrabold tracking-tight text-primary-ink">MonEra</span>
       </div>
 
