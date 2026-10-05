@@ -1,4 +1,4 @@
-export type AccountType = 'bank' | 'cash' | 'credit_card' | 'savings' | 'other'
+export type AccountType = 'bank' | 'digital_wallet' | 'cash' | 'credit_card' | 'savings' | 'other'
 export type TransactionType = 'expense' | 'income' | 'transfer'
 
 export interface Account {

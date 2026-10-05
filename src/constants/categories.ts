@@ -28,8 +28,14 @@ export const COLOR_OPTIONS = [
 
 export const ACCOUNT_TYPES: { value: AccountType; label: string }[] = [
   { value: 'bank', label: 'Cuenta bancaria' },
+  { value: 'digital_wallet', label: 'Billetera digital' },
   { value: 'cash', label: 'Efectivo' },
   { value: 'credit_card', label: 'Tarjeta de crédito' },
   { value: 'savings', label: 'Ahorros' },
   { value: 'other', label: 'Otro' },
 ]
+
+/** Icono sugerido para cada tipo de cuenta (se aplica al cambiar el tipo si no elegiste otro) */
+export const ACCOUNT_TYPE_ICON: Record<AccountType, string> = {
+  bank: 'landmark', digital_wallet: 'smartphone', cash: 'banknote', credit_card: 'credit-card', savings: 'piggy-bank', other: 'wallet',
+}

@@ -6,7 +6,7 @@ import { Field, inputCls } from '../ui/Field'
 import { MoneyInput } from '../ui/MoneyInput'
 import { getIcon } from '../../constants/icons'
 import { ACCOUNT_ICON_KEYS } from '../../constants/icons'
-import { ACCOUNT_TYPES, COLOR_OPTIONS } from '../../constants/categories'
+import { ACCOUNT_TYPE_ICON, ACCOUNT_TYPES, COLOR_OPTIONS } from '../../constants/categories'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
 import { useUI } from '../../context/UIContext'
@@ -33,6 +33,12 @@ function AccountForm({ editing, onDone }: { editing: Account | null; onDone: () 
   const [icon, setIcon] = useState(editing?.icon ?? 'landmark')
   const [active, setActive] = useState(editing?.active ?? true)
   const [saving, setSaving] = useState(false)
+
+  // Al cambiar el tipo, sugiere su icono, salvo que ya hayas elegido uno distinto al sugerido
+  function changeType(next: AccountType) {
+    if (icon === ACCOUNT_TYPE_ICON[type]) setIcon(ACCOUNT_TYPE_ICON[next])
+    setType(next)
+  }
 
   async function save() {
     if (!user) return
@@ -64,11 +70,11 @@ function AccountForm({ editing, onDone }: { editing: Account | null; onDone: () 
     <div className="space-y-4">
       <Field label="Nombre"><input className={inputCls} value={name} maxLength={40} placeholder="Ej: Bancolombia" onChange={(e) => setName(e.target.value)} autoFocus /></Field>
       <Field label="Tipo">
-        <select className={inputCls} value={type} onChange={(e) => setType(e.target.value as AccountType)}>
+        <select className={inputCls} value={type} onChange={(e) => changeType(e.target.value as AccountType)}>
           {ACCOUNT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
         </select>
       </Field>
-      <Field label={type === 'credit_card' ? 'Lo que debes hoy' : 'Saldo inicial'} hint={type === 'credit_card' ? 'Se cuenta como deuda en tu saldo total.' : 'Lo que tienes en esta cuenta hoy.'}>
+      <Field label={type === 'credit_card' ? 'Lo que debes hoy' : 'Saldo inicial'} hint={type === 'credit_card' ? 'Se cuenta como deuda en tu saldo total.' : type === 'digital_wallet' ? 'Nequi, Daviplata, RappiCuenta… lo que tienes hoy.' : type === 'savings' ? 'Este saldo se suma a "Dinero ahorrado" en el inicio.' : 'Lo que tienes en esta cuenta hoy.'}>
         <MoneyInput value={balance} onChange={setBalance} />
       </Field>
 

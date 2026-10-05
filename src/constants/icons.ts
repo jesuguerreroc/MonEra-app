@@ -1,7 +1,7 @@
 import {
   Utensils, Car, Home, Zap, ShoppingBag, Film, HeartPulse, GraduationCap, Repeat, Laptop, Plane,
   CircleEllipsis, Wallet, Briefcase, Store, Gift, Tag, Banknote, Landmark, PiggyBank, CreditCard, Coins,
-  Coffee, Dumbbell, PawPrint, Baby, Shirt, Music, Gamepad2, Wrench,
+  Coffee, Dumbbell, PawPrint, Baby, Shirt, Music, Gamepad2, Wrench, Smartphone,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -11,7 +11,7 @@ export const ICONS: Record<string, LucideIcon> = {
   ellipsis: CircleEllipsis, wallet: Wallet, briefcase: Briefcase, store: Store, gift: Gift, tag: Tag,
   banknote: Banknote, landmark: Landmark, 'piggy-bank': PiggyBank, 'credit-card': CreditCard, coins: Coins,
   coffee: Coffee, dumbbell: Dumbbell, 'paw-print': PawPrint, baby: Baby, shirt: Shirt, music: Music,
-  gamepad: Gamepad2, wrench: Wrench,
+  gamepad: Gamepad2, wrench: Wrench, smartphone: Smartphone,
 }
 
 export function getIcon(name: string): LucideIcon {
@@ -23,4 +23,4 @@ export const CATEGORY_ICON_KEYS = [
   'laptop', 'plane', 'coffee', 'dumbbell', 'paw-print', 'baby', 'shirt', 'music', 'gamepad', 'wrench',
   'briefcase', 'store', 'gift', 'banknote', 'coins', 'tag',
 ]
-export const ACCOUNT_ICON_KEYS = ['landmark', 'wallet', 'credit-card', 'piggy-bank', 'banknote', 'coins']
+export const ACCOUNT_ICON_KEYS = ['landmark', 'smartphone', 'wallet', 'credit-card', 'piggy-bank', 'banknote', 'coins']

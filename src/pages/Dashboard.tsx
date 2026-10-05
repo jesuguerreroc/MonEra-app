@@ -27,10 +27,12 @@ export default function Dashboard() {
 
   const month = monthKey(todayStr())
   const { income, expense } = monthTotals(d.transactions, month)
-  const saved = d.goals.reduce((s, g) => s + goalSaved(g), 0)
   const owed = d.debts.reduce((s, l) => s + loanRemaining(l), 0)
   const firstName = (user?.displayName ?? user?.email ?? '').split(/[ @]/)[0] || 'tú'
   const activeAccounts = d.accounts.filter((a) => a.active)
+  // Dinero ahorrado = saldo actual de tus cuentas de tipo "Ahorros" (activas)
+  const savingsAccounts = activeAccounts.filter((a) => a.type === 'savings')
+  const saved = savingsAccounts.reduce((s, a) => s + (d.balances[a.id] ?? 0), 0)
 
   const slices = Object.entries(expensesByCategory(d.transactions, month)).map(([id, value]) => {
     const c = d.categoryById(id)
@@ -63,7 +65,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard label="Ingresos del mes" amount={income} icon={ArrowDownLeft} tone="bg-success/10 text-success" />
         <StatCard label="Gastos del mes" amount={expense} icon={ArrowUpRight} tone="bg-primary/10 text-primary" />
-        <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-lavender text-primary-ink" />
+        <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-lavender text-primary-ink"
+          hint={savingsAccounts.length ? `En ${savingsAccounts.length} ${savingsAccounts.length === 1 ? 'cuenta' : 'cuentas'} de ahorro` : 'Sin cuentas de ahorro'} />
         <StatCard label="Deudas pendientes" amount={owed} icon={HandCoins} tone="bg-danger/10 text-danger" />
       </div>
 
