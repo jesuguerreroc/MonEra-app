@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
+/* Modo oscuro por clase en <html> (lo controla ThemeContext) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Paleta Fylo */
   --color-primary: #6c4cf1;
   --color-primary-dark: #4930b8;
+  /* Texto de marca sobre fondos claros (en oscuro se aclara) */
+  --color-primary-ink: #4930b8;
   --color-secondary: #9b8afb;
   --color-lavender: #ede9fe;
   --color-background: #f7f7fb;
@@ -20,6 +25,24 @@
   --shadow-card: 0 1px 2px rgba(23, 21, 31, 0.04), 0 6px 20px rgba(23, 21, 31, 0.04);
 }
 
+/* Paleta oscura: mismos tokens, así todos los componentes se adaptan solos */
+html.dark {
+  color-scheme: dark;
+  --color-primary: #7656f5;
+  --color-primary-ink: #c4b5fd;
+  --color-secondary: #a596fc;
+  --color-lavender: #2a2346;
+  --color-background: #0f0d16;
+  --color-surface: #1a1726;
+  --color-ink: #f1effa;
+  --color-muted: #a29db6;
+  --color-line: #2c283d;
+  --color-success: #3ccf86;
+  --color-danger: #f2686d;
+  --color-warning: #f0b43c;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
 html { -webkit-tap-highlight-color: transparent; }
 body {
   background: var(--color-background);
@@ -27,6 +50,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  transition: background-color .2s ease, color .2s ease;
 }
 :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
@@ -38,11 +62,26 @@ body {
 .animate-sheet { animation: sheet .24s cubic-bezier(.2, .8, .2, 1) }
 .animate-rise { animation: rise .28s ease-out both }
 
-/* Cerdito Fylo: ojos con $ que laten y moneda que flota */
-.pig-animated .pig-eye { transform-box: fill-box; transform-origin: center; animation: pig-eye 2.8s ease-in-out infinite }
-.pig-animated .pig-coin { transform-box: fill-box; transform-origin: center; animation: pig-coin 2.2s ease-in-out infinite }
-@keyframes pig-eye { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.14) } }
-@keyframes pig-coin { 0%, 100% { transform: translateY(0) rotate(0) } 50% { transform: translateY(-3px) rotate(-8deg) } }
+/* Alcancía Fylo: la moneda cae en la ranura y el cerdito rebota */
+.pig-animated .pig-coin { animation: pig-coin 3.2s cubic-bezier(.5, 0, .5, 1) infinite }
+.pig-animated .pig-body { transform-box: fill-box; transform-origin: 50% 100%; animation: pig-body 3.2s ease-in-out infinite }
+@keyframes pig-coin {
+  0% { transform: translateY(-10px); opacity: 0 }
+  15%, 50% { transform: translateY(0); opacity: 1 }
+  70%, 100% { transform: translateY(24px); opacity: 1 }
+}
+@keyframes pig-body {
+  0%, 64%, 100% { transform: none }
+  70% { transform: scale(1.04, .96) }
+  78% { transform: scale(.98, 1.02) }
+  86% { transform: none }
+}
+
+/* Login: manchas de color que flotan y tarjetas de vista previa */
+@keyframes blob { 0%, 100% { transform: translate(0, 0) scale(1) } 50% { transform: translate(18px, -14px) scale(1.08) } }
+@keyframes float { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+.animate-blob { animation: blob 14s ease-in-out infinite }
+.animate-float { animation: float 6s ease-in-out infinite }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

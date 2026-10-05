@@ -57,9 +57,9 @@ export default function Reports() {
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           <Card className="!p-4 col-span-2 lg:col-span-1 bg-lavender border-transparent">
-            <p className="text-xs text-primary-dark/70">Tasa de ahorro · <span className="capitalize">{monthLabel(month)}</span></p>
-            <p className="text-3xl font-extrabold text-primary-dark">{savingsRate === null ? '—' : `${savingsRate}%`}</p>
-            <p className="text-xs text-primary-dark/70 mt-0.5">
+            <p className="text-xs text-primary-ink/70">Tasa de ahorro · <span className="capitalize">{monthLabel(month)}</span></p>
+            <p className="text-3xl font-extrabold text-primary-ink">{savingsRate === null ? '—' : `${savingsRate}%`}</p>
+            <p className="text-xs text-primary-ink/70 mt-0.5">
               {savingsRate === null ? 'Registra ingresos para calcularla.' : savingsRate < 0 ? 'Gastaste más de lo que ingresó.' : `Guardaste ${formatCOP(now.income - now.expense)} este mes.`}
             </p>
           </Card>

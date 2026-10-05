@@ -1,5 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { formatCOP } from '../../utils/format'
+import { tooltipStyle } from './chartTheme'
 
 export interface Slice { name: string; value: number; color: string }
 
@@ -19,7 +20,7 @@ export function CategoryDonut({ slices, max = 6 }: { slices: Slice[]; max?: numb
             <Pie data={shown} dataKey="value" nameKey="name" innerRadius={52} outerRadius={80} paddingAngle={2} stroke="none">
               {shown.map((s) => <Cell key={s.name} fill={s.color} />)}
             </Pie>
-            <Tooltip formatter={(v) => formatCOP(Number(v))} contentStyle={{ borderRadius: 12, border: '1px solid #ebe9f3' }} />
+            <Tooltip formatter={(v) => formatCOP(Number(v))} contentStyle={tooltipStyle} />
           </PieChart>
         </ResponsiveContainer>
       </div>

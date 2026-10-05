@@ -88,7 +88,7 @@ function AccountForm({ editing, onDone }: { editing: Account | null; onDone: () 
         <div className="flex flex-wrap gap-2">
           {COLOR_OPTIONS.map((c) => (
             <button key={c} aria-label={`Color ${c}`} aria-pressed={color === c} onClick={() => setColor(c)}
-              className={cn('size-9 rounded-full ring-offset-2', color === c && 'ring-2 ring-ink')} style={{ background: c }} />
+              className={cn('size-9 rounded-full ring-offset-2 ring-offset-surface', color === c && 'ring-2 ring-ink')} style={{ background: c }} />
           ))}
         </div>
       </fieldset>

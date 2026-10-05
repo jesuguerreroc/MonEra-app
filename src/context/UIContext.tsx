@@ -60,7 +60,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
 
       <div aria-live="polite" className="fixed z-[60] left-0 right-0 top-[max(1rem,env(safe-area-inset-top))] flex flex-col items-center gap-2 px-4 pointer-events-none">
         {toasts.map((t) => (
-          <div key={t.id} className="animate-sheet pointer-events-auto flex items-center gap-2 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-medium shadow-lg max-w-sm">
+          <div key={t.id} className="animate-sheet pointer-events-auto flex items-center gap-2 rounded-2xl bg-[#17151f] text-white ring-1 ring-white/10 px-4 py-3 text-sm font-medium shadow-lg max-w-sm">
             {t.kind === 'success' ? <CheckCircle2 size={18} className="text-emerald-400 shrink-0" /> : <XCircle size={18} className="text-red-400 shrink-0" />}
             {t.message}
           </div>

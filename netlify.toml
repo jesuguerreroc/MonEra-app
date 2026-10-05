@@ -1,0 +1,14 @@
+# Configuración de despliegue en Netlify
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# La app usa rutas del navegador (/cuentas, /reportes…): cualquier ruta
+# debe servir index.html; si no, al recargar una página sale error 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

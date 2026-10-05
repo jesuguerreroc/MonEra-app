@@ -15,8 +15,8 @@ import { cn } from '../../utils/cn'
 import type { Transaction, TransactionType } from '../../types'
 
 const TYPES: { value: TransactionType; label: string; active: string }[] = [
-  { value: 'expense', label: 'Gasto', active: 'bg-danger text-white' },
-  { value: 'income', label: 'Ingreso', active: 'bg-success text-white' },
+  { value: 'expense', label: 'Gasto', active: 'bg-danger text-white dark:text-background' },
+  { value: 'income', label: 'Ingreso', active: 'bg-success text-white dark:text-background' },
   { value: 'transfer', label: 'Transferir', active: 'bg-primary text-white' },
 ]
 

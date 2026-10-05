@@ -3,7 +3,7 @@ import type { LoanStatus } from '../../types'
 
 const META: Record<LoanStatus, { label: string; icon: LucideIcon; cls: string }> = {
   pending: { label: 'Pendiente', icon: Clock, cls: 'bg-ink/[0.06] text-ink' },
-  partial: { label: 'Parcial', icon: CircleDot, cls: 'bg-primary/10 text-primary-dark' },
+  partial: { label: 'Parcial', icon: CircleDot, cls: 'bg-primary/10 text-primary-ink' },
   paid: { label: 'Pagada', icon: CheckCircle2, cls: 'bg-success/10 text-success' },
   overdue: { label: 'Vencida', icon: AlertCircle, cls: 'bg-danger/10 text-danger' },
 }

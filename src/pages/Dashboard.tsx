@@ -63,7 +63,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard label="Ingresos del mes" amount={income} icon={ArrowDownLeft} tone="bg-success/10 text-success" />
         <StatCard label="Gastos del mes" amount={expense} icon={ArrowUpRight} tone="bg-primary/10 text-primary" />
-        <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-lavender text-primary-dark" />
+        <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-lavender text-primary-ink" />
         <StatCard label="Deudas pendientes" amount={owed} icon={HandCoins} tone="bg-danger/10 text-danger" />
       </div>
 

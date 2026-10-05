@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { UIProvider } from './context/UIContext'
+import { ThemeProvider } from './context/ThemeContext'
 import AppLayout from './layouts/AppLayout'
 import AuthPage from './pages/AuthPage'
 import Dashboard from './pages/Dashboard'
@@ -53,10 +54,12 @@ function Gate() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Gate />
-      </AuthProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <Gate />
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LogOut, Plus, Trash2 } from 'lucide-react'
+import { LogOut, Monitor, Moon, Plus, Sun, Trash2 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card, SectionTitle } from '../components/ui/Card'
 import { IconBadge } from '../components/ui/IconBadge'
@@ -8,12 +8,21 @@ import { CategoryModal } from '../components/accounts/CategoryForm'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
+import { useTheme, type ThemePref } from '../context/ThemeContext'
+import { cn } from '../utils/cn'
+
+const THEMES: { value: ThemePref; label: string; icon: typeof Sun }[] = [
+  { value: 'light', label: 'Claro', icon: Sun },
+  { value: 'dark', label: 'Oscuro', icon: Moon },
+  { value: 'system', label: 'Sistema', icon: Monitor },
+]
 import { removeItem } from '../services/db'
 
 export default function Settings() {
   const { user, logout } = useAuth()
   const { categories, transactions, budgets } = useData()
   const { toast, confirm } = useUI()
+  const { theme, setTheme } = useTheme()
   const [creating, setCreating] = useState(false)
 
   async function removeCategory(id: string, name: string) {
@@ -40,6 +49,20 @@ export default function Settings() {
           <p className="font-semibold">{user?.displayName ?? 'Sin nombre'}</p>
           <p className="text-sm text-muted">{user?.email}</p>
           <p className="text-xs text-muted mt-2">Moneda: peso colombiano (COP) · Zona horaria: Bogotá</p>
+        </Card>
+
+        <Card>
+          <SectionTitle title="Apariencia" />
+          <div role="radiogroup" aria-label="Tema" className="grid grid-cols-3 gap-2">
+            {THEMES.map(({ value, label, icon: Icon }) => (
+              <button key={value} role="radio" aria-checked={theme === value} onClick={() => setTheme(value)}
+                className={cn('flex flex-col items-center gap-1.5 rounded-xl border min-h-20 py-3 text-sm font-medium transition',
+                  theme === value ? 'border-primary bg-lavender text-primary-ink' : 'border-line text-muted hover:bg-ink/5')}>
+                <Icon size={20} />{label}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-muted mt-2">"Sistema" usa el mismo tema que tu teléfono o computador.</p>
         </Card>
 
         {groups.map((g) => (
