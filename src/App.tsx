@@ -8,6 +8,7 @@ import AuthPage from './pages/AuthPage'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
 import Accounts from './pages/Accounts'
+import AccountDetail from './pages/AccountDetail'
 import Budgets from './pages/Budgets'
 import LoansPage, { DEBT_CONFIG, RECEIVABLE_CONFIG } from './pages/LoansPage'
 import Goals from './pages/Goals'
@@ -37,6 +38,7 @@ function Gate() {
             <Route index element={<Dashboard />} />
             <Route path="movimientos" element={<Transactions />} />
             <Route path="cuentas" element={<Accounts />} />
+            <Route path="cuentas/:id" element={<AccountDetail />} />
             <Route path="presupuestos" element={<Budgets />} />
             <Route path="deudas" element={<LoansPage cfg={DEBT_CONFIG} />} />
             <Route path="me-deben" element={<LoansPage cfg={RECEIVABLE_CONFIG} />} />

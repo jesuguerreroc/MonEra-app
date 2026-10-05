@@ -8,18 +8,30 @@ export function netChange(t: Transaction, activeIds: Set<string>): number {
   return (t.toAccountId && activeIds.has(t.toAccountId) ? t.amount : 0) - (activeIds.has(t.accountId) ? t.amount : 0)
 }
 
+/** Cuánto cambia el saldo de UNA cuenta con este movimiento (0 si no la toca) */
+export function accountEffect(t: Transaction, accountId: string): number {
+  if (t.type === 'income') return t.accountId === accountId ? t.amount : 0
+  if (t.type === 'expense') return t.accountId === accountId ? -t.amount : 0
+  return (t.toAccountId === accountId ? t.amount : 0) - (t.accountId === accountId ? t.amount : 0)
+}
+
 /** Saldo actual = saldo inicial + ingresos - gastos ± transferencias */
 export function accountBalance(a: Account, txs: Transaction[]): number {
-  let b = a.initialBalance
-  for (const t of txs) {
-    if (t.type === 'income' && t.accountId === a.id) b += t.amount
-    else if (t.type === 'expense' && t.accountId === a.id) b -= t.amount
-    else if (t.type === 'transfer') {
-      if (t.accountId === a.id) b -= t.amount
-      if (t.toAccountId === a.id) b += t.amount
-    }
-  }
-  return b
+  return txs.reduce((b, t) => b + accountEffect(t, a.id), a.initialBalance)
+}
+
+export interface AccountEntry { tx: Transaction; delta: number; balanceAfter: number }
+
+/** Movimientos de una cuenta (más recientes primero) con el saldo que quedó después de cada uno */
+export function accountHistory(a: Account, txs: Transaction[]): AccountEntry[] {
+  const mine = txs.filter((t) => t.accountId === a.id || t.toAccountId === a.id)
+    .sort((x, y) => (x.date === y.date ? x.createdAt - y.createdAt : x.date.localeCompare(y.date)))
+  let balance = a.initialBalance
+  return mine.map((tx) => {
+    const delta = accountEffect(tx, a.id)
+    balance += delta
+    return { tx, delta, balanceAfter: balance }
+  }).reverse()
 }
 
 /** Las transferencias NO cuentan como ingreso ni gasto */

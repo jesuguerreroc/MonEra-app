@@ -20,15 +20,15 @@ const TYPES: { value: TransactionType; label: string; active: string }[] = [
   { value: 'transfer', label: 'Transferir', active: 'bg-primary text-white' },
 ]
 
-export function TransactionModal({ open, onClose, editing }: { open: boolean; onClose: () => void; editing: Transaction | null }) {
+export function TransactionModal({ open, onClose, editing, presetAccountId }: { open: boolean; onClose: () => void; editing: Transaction | null; presetAccountId?: string }) {
   return (
     <Modal open={open} onClose={onClose} title={editing ? 'Editar movimiento' : 'Nuevo movimiento'}>
-      <TransactionForm editing={editing} onDone={onClose} />
+      <TransactionForm editing={editing} presetAccountId={presetAccountId} onDone={onClose} />
     </Modal>
   )
 }
 
-function TransactionForm({ editing, onDone }: { editing: Transaction | null; onDone: () => void }) {
+function TransactionForm({ editing, presetAccountId, onDone }: { editing: Transaction | null; presetAccountId?: string; onDone: () => void }) {
   const { user } = useAuth()
   const { accounts, categories } = useData()
   const { toast, confirm } = useUI()
@@ -38,7 +38,7 @@ function TransactionForm({ editing, onDone }: { editing: Transaction | null; onD
   const [amount, setAmount] = useState(editing?.amount ?? 0)
   const [categoryId, setCategoryId] = useState(editing?.categoryId ?? '')
   const [description, setDescription] = useState(editing?.description ?? '')
-  const [accountId, setAccountId] = useState(editing?.accountId ?? options[0]?.id ?? '')
+  const [accountId, setAccountId] = useState(editing?.accountId ?? options.find((a) => a.id === presetAccountId)?.id ?? options[0]?.id ?? '')
   const [toAccountId, setToAccountId] = useState(editing?.toAccountId ?? '')
   const [date, setDate] = useState(editing?.date ?? todayStr())
   const [notes, setNotes] = useState(editing?.notes ?? '')

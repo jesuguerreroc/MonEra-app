@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Plus, Wallet } from 'lucide-react'
+import { ChevronRight, Plus, Wallet } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -29,7 +30,7 @@ export default function Accounts() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {accounts.map((a) => (
-            <button key={a.id} onClick={() => open(a)} className="text-left">
+            <Link key={a.id} to={`/cuentas/${a.id}`} className="text-left" aria-label={`Ver movimientos de ${a.name}`}>
               <Card className={`flex items-center gap-4 hover:border-secondary transition ${a.active ? '' : 'opacity-60'}`}>
                 <IconBadge icon={a.icon} color={a.color} size={48} />
                 <div className="flex-1 min-w-0">
@@ -37,8 +38,9 @@ export default function Accounts() {
                   <p className="text-xs text-muted">{ACCOUNT_TYPES.find((t) => t.value === a.type)?.label}{a.active ? '' : ' · Inactiva'}</p>
                 </div>
                 <p className={`font-bold tabular-nums ${balances[a.id] < 0 ? 'text-danger' : ''}`}>{formatCOP(balances[a.id] ?? 0)}</p>
+                <ChevronRight size={18} className="text-muted -ml-2 shrink-0" />
               </Card>
-            </button>
+            </Link>
           ))}
         </div>
       )}

@@ -12,7 +12,8 @@ interface ConfirmOptions { title: string; message: string; confirmLabel?: string
 interface UIValue {
   toast: (message: string, kind?: ToastKind) => void
   confirm: (options: ConfirmOptions) => Promise<boolean>
-  openTx: (editing?: Transaction) => void
+  /** preset.accountId: cuenta que viene elegida al crear un movimiento nuevo */
+  openTx: (editing?: Transaction, preset?: { accountId?: string }) => void
 }
 
 const UIContext = createContext<UIValue | null>(null)
@@ -21,7 +22,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const [confirmState, setConfirmState] = useState<ConfirmOptions | null>(null)
   const resolver = useRef<((ok: boolean) => void) | null>(null)
-  const [txModal, setTxModal] = useState<{ open: boolean; editing: Transaction | null }>({ open: false, editing: null })
+  const [txModal, setTxModal] = useState<{ open: boolean; editing: Transaction | null; accountId?: string }>({ open: false, editing: null })
   const nextId = useRef(1)
 
   const toast = useCallback((message: string, kind: ToastKind = 'success') => {
@@ -41,14 +42,15 @@ export function UIProvider({ children }: { children: ReactNode }) {
     setConfirmState(null)
   }
 
-  const openTx = useCallback((editing?: Transaction) => setTxModal({ open: true, editing: editing ?? null }), [])
+  const openTx = useCallback((editing?: Transaction, preset?: { accountId?: string }) =>
+    setTxModal({ open: true, editing: editing ?? null, accountId: preset?.accountId }), [])
   const value = useMemo(() => ({ toast, confirm, openTx }), [toast, confirm, openTx])
 
   return (
     <UIContext.Provider value={value}>
       {children}
 
-      <TransactionModal open={txModal.open} editing={txModal.editing} onClose={() => setTxModal({ open: false, editing: null })} />
+      <TransactionModal open={txModal.open} editing={txModal.editing} presetAccountId={txModal.accountId} onClose={() => setTxModal({ open: false, editing: null })} />
 
       <Modal open={!!confirmState} onClose={() => answer(false)} title={confirmState?.title ?? ''}>
         <p className="text-muted mb-5">{confirmState?.message}</p>
