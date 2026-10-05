@@ -1,12 +1,12 @@
 import { useId } from 'react'
 import { cn } from '../../utils/cn'
 
-/** Alcancía Fylo: cerdito de perfil con una moneda que cae en la ranura (animated). */
+/** Alcancía MonEra: cerdito de perfil con una moneda que cae en la ranura (animated). */
 export function PigLogo({ size = 40, animated = false, bg = true, className }: { size?: number; animated?: boolean; bg?: boolean; className?: string }) {
   const id = useId().replace(/:/g, '')
   const url = (name: string) => `url(#${id}-${name})`
   return (
-    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label="Fylo" className={cn('shrink-0', animated && 'pig-animated', className)}>
+    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label="MonEra" className={cn('shrink-0', animated && 'pig-animated', className)}>
       <defs>
         <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#8b6ff7" />

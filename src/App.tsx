@@ -18,7 +18,7 @@ import { PigLogo } from './components/ui/PigLogo'
 
 function Splash() {
   return (
-    <div className="min-h-dvh grid place-items-center" role="status" aria-label="Cargando Fylo">
+    <div className="min-h-dvh grid place-items-center" role="status" aria-label="Cargando MonEra">
       <PigLogo size={88} animated />
     </div>
   )

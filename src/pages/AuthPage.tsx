@@ -65,7 +65,7 @@ export default function AuthPage() {
         <Blobs />
         <div className="relative animate-rise">
           <PigLogo size={84} animated className="mx-auto drop-shadow-[0_12px_24px_rgba(20,10,60,.35)]" />
-          <p className="text-3xl font-extrabold tracking-tight mt-3">Fylo</p>
+          <p className="text-3xl font-extrabold tracking-tight mt-3">MonEra</p>
           <p className="text-white/75 text-sm mt-1">Tus finanzas, fluyendo sin esfuerzo.</p>
         </div>
       </header>
@@ -142,7 +142,7 @@ export default function AuthPage() {
           </div>
 
           <p className="mt-8 text-center text-xs text-muted">
-            {mode === 'register' ? 'Al crear tu cuenta, tus datos quedan guardados solo para ti.' : 'Finance + Flow · Hecho para tu día a día'}
+            {mode === 'register' ? 'Al crear tu cuenta, tus datos quedan guardados solo para ti.' : 'Hecho para tu día a día'}
           </p>
         </div>
       </main>
@@ -198,7 +198,7 @@ function BrandPanel() {
 
       <div className="relative flex items-center gap-3">
         <PigLogo size={46} />
-        <span className="text-2xl font-extrabold tracking-tight">Fylo</span>
+        <span className="text-2xl font-extrabold tracking-tight">MonEra</span>
       </div>
 
       <div className="relative grid xl:grid-cols-[1fr_auto] items-center gap-10">

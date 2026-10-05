@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Paleta Fylo */
+  /* Paleta MonEra */
   --color-primary: #6c4cf1;
   --color-primary-dark: #4930b8;
   /* Texto de marca sobre fondos claros (en oscuro se aclara) */
@@ -62,7 +62,7 @@ body {
 .animate-sheet { animation: sheet .24s cubic-bezier(.2, .8, .2, 1) }
 .animate-rise { animation: rise .28s ease-out both }
 
-/* Alcancía Fylo: la moneda cae en la ranura y el cerdito rebota */
+/* Alcancía MonEra: la moneda cae en la ranura y el cerdito rebota */
 .pig-animated .pig-coin { animation: pig-coin 3.2s cubic-bezier(.5, 0, .5, 1) infinite }
 .pig-animated .pig-body { transform-box: fill-box; transform-origin: 50% 100%; animation: pig-body 3.2s ease-in-out infinite }
 @keyframes pig-coin {

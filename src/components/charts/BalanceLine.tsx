@@ -9,7 +9,7 @@ export function BalanceLine({ data }: { data: { key: string; balance: number }[]
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={rows} margin={{ left: -8, right: 8, top: 4 }}>
           <defs>
-            <linearGradient id="fyloArea" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="moneraArea" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#6c4cf1" stopOpacity={0.18} />
               <stop offset="100%" stopColor="#6c4cf1" stopOpacity={0} />
             </linearGradient>
@@ -18,7 +18,7 @@ export function BalanceLine({ data }: { data: { key: string; balance: number }[]
           <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} stroke={AXIS} />
           <YAxis tickLine={false} axisLine={false} fontSize={11} stroke={AXIS} tickFormatter={formatCompact} width={56} />
           <Tooltip formatter={(v) => formatCOP(Number(v))} contentStyle={tooltipStyle} />
-          <Area type="monotone" dataKey="Saldo" stroke="#6c4cf1" strokeWidth={2.5} fill="url(#fyloArea)" />
+          <Area type="monotone" dataKey="Saldo" stroke="#6c4cf1" strokeWidth={2.5} fill="url(#moneraArea)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>

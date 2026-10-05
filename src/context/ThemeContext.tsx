@@ -10,7 +10,7 @@ interface ThemeValue {
   toggle: () => void
 }
 
-const KEY = 'fylo-theme' // el script de index.html lee esta misma clave para evitar el parpadeo
+const KEY = 'monera-theme' // el script de index.html lee esta misma clave para evitar el parpadeo
 const ThemeContext = createContext<ThemeValue | null>(null)
 const media = () => window.matchMedia('(prefers-color-scheme: dark)')
 

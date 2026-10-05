@@ -1,4 +1,4 @@
-# Fylo – cómo instalar este código en tu proyecto
+# MonEra – cómo instalar este código en tu proyecto
 
 Estos archivos están pensados para copiarse **sobre tu proyecto `fylo` ya creado** (el de la Fase anterior).
 

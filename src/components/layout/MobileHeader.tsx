@@ -10,7 +10,7 @@ export function MobileHeader() {
     <header className="md:hidden sticky top-0 z-30 bg-background/90 backdrop-blur px-4 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))] flex items-center justify-between">
       <Link to="/" className="flex items-center gap-2" aria-label="Ir al inicio">
         <PigLogo size={34} />
-        <span className="text-xl font-extrabold tracking-tight text-primary-ink">Fylo</span>
+        <span className="text-xl font-extrabold tracking-tight text-primary-ink">MonEra</span>
       </Link>
       <div className="flex items-center gap-1">
         <ThemeToggle />
