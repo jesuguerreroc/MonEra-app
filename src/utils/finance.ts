@@ -74,6 +74,11 @@ export function balanceSeries(accounts: Account[], txs: Transaction[], months: s
 // ---------- Deudas / Personas que me deben ----------
 export const loanPaid = (l: Loan) => l.payments.reduce((s, p) => s + p.amount, 0)
 export const loanRemaining = (l: Loan) => Math.max(0, l.original - loanPaid(l))
+/** Fecha en que quedó saldada (último pago), o undefined si aún tiene saldo */
+export function loanSettledOn(l: Loan): string | undefined {
+  if (loanRemaining(l) > 0) return undefined
+  return l.payments.reduce<string | undefined>((max, p) => (!max || p.date > max ? p.date : max), undefined)
+}
 
 export function loanStatus(l: Loan): LoanStatus {
   if (loanRemaining(l) === 0) return 'paid'

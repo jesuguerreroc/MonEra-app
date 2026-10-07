@@ -23,6 +23,11 @@ export interface LoanConfig {
   paidLabel: string
   emptyTitle: string
   emptyText: string
+  /** Cuando no queda nada pendiente pero sí hay historial */
+  allSettledText: string
+  historyEmptyText: string
+  /** Aviso al registrar el pago que completa el total */
+  settledToast: (name: string) => string
 }
 
 export function LoanModal({ cfg, editing, onClose }: { cfg: LoanConfig; editing: Loan | null; onClose: () => void }) {

@@ -8,12 +8,14 @@ import { formatCOP, todayStr } from '../../utils/format'
 import type { Payment } from '../../types'
 
 /** Modal genérico para registrar un pago, abono o aporte */
-export function PaymentModal({ title, max, onSave, onClose }: {
+export function PaymentModal({ title, max, onSave, onClose, successText }: {
   title: string
   /** Límite opcional (por ejemplo, el saldo pendiente) */
   max?: number
   onSave: (p: Payment) => Promise<void>
   onClose: () => void
+  /** Mensaje al guardar (por defecto "Registrado") */
+  successText?: (p: Payment) => string
 }) {
   const { toast } = useUI()
   const [amount, setAmount] = useState(0)
@@ -26,8 +28,9 @@ export function PaymentModal({ title, max, onSave, onClose }: {
     if (max !== undefined && amount > max) return toast(`El monto no puede superar ${formatCOP(max)}`, 'error')
     setSaving(true)
     try {
-      await onSave({ id: crypto.randomUUID(), amount, date, ...(note.trim() ? { note: note.trim().slice(0, 120) } : {}) })
-      toast('Registrado'); onClose()
+      const p: Payment = { id: crypto.randomUUID(), amount, date, ...(note.trim() ? { note: note.trim().slice(0, 120) } : {}) }
+      await onSave(p)
+      toast(successText?.(p) ?? 'Registrado'); onClose()
     } catch { toast('No pudimos guardar.', 'error'); setSaving(false) }
   }
 
