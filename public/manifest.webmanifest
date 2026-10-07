@@ -1,0 +1,23 @@
+{
+  "name": "MonEra · Finanzas personales",
+  "short_name": "MonEra",
+  "description": "Tus finanzas personales, fluidas y sin esfuerzo.",
+  "lang": "es-CO",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f7fb",
+  "theme_color": "#6c4cf1",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "/pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/pwa-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Nuevo movimiento", "short_name": "Nuevo", "url": "/?nuevo=1", "icons": [{ "src": "/pwa-192.png", "sizes": "192x192" }] },
+    { "name": "Movimientos", "url": "/movimientos", "icons": [{ "src": "/pwa-192.png", "sizes": "192x192" }] },
+    { "name": "Cuentas", "url": "/cuentas", "icons": [{ "src": "/pwa-192.png", "sizes": "192x192" }] }
+  ]
+}

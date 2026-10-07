@@ -5,6 +5,8 @@ import { Card, SectionTitle } from '../components/ui/Card'
 import { IconBadge } from '../components/ui/IconBadge'
 import { PageHeader } from '../components/ui/PageHeader'
 import { CategoryModal } from '../components/accounts/CategoryForm'
+import { InstallCard } from '../components/ui/InstallApp'
+import { AlertsSettings } from '../components/alerts/AlertsUI'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
@@ -51,6 +53,8 @@ export default function Settings() {
           <p className="text-xs text-muted mt-2">Moneda: peso colombiano (COP) · Zona horaria: Bogotá</p>
         </Card>
 
+        <InstallCard />
+
         <Card>
           <SectionTitle title="Apariencia" />
           <div role="radiogroup" aria-label="Tema" className="grid grid-cols-3 gap-2">
@@ -64,6 +68,8 @@ export default function Settings() {
           </div>
           <p className="text-xs text-muted mt-2">"Sistema" usa el mismo tema que tu teléfono o computador.</p>
         </Card>
+
+        <AlertsSettings />
 
         {groups.map((g) => (
           <Card key={g.title}>
@@ -82,7 +88,7 @@ export default function Settings() {
           </Card>
         ))}
 
-        <Button variant="danger" full onClick={logout}><LogOut size={18} />Cerrar sesión</Button>
+        <Button variant="danger" full onClick={() => logout().catch(() => toast('Tienes cambios sin subir. Conéctate a internet antes de cerrar sesión.', 'error'))}><LogOut size={18} />Cerrar sesión</Button>
       </div>
       {creating && <CategoryModal onClose={() => setCreating(false)} />}
     </>

@@ -3,7 +3,8 @@ import {
   GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail,
   signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile, type User,
 } from 'firebase/auth'
-import { auth } from '../firebase/config'
+import { clearIndexedDbPersistence, terminate, waitForPendingWrites } from 'firebase/firestore'
+import { auth, db } from '../firebase/config'
 
 interface AuthValue {
   user: User | null
@@ -52,7 +53,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     loginWithGoogle: async () => { await signInWithPopup(auth, new GoogleAuthProvider()) },
     resetPassword: async (email) => { await sendPasswordResetEmail(auth, email) },
-    logout: async () => { await signOut(auth) },
+    logout: async () => {
+      // Si hay cambios hechos sin internet que aún no se subieron, cerrar sesión los perdería
+      const synced = await Promise.race([
+        waitForPendingWrites(db).then(() => true),
+        new Promise<boolean>((r) => setTimeout(() => r(false), 2500)),
+      ])
+      if (!synced) throw new Error('pending-writes')
+      await signOut(auth)
+      // Borra la copia local de los datos (importante en computadores compartidos) y reinicia limpio
+      await terminate(db).then(() => clearIndexedDbPersistence(db)).catch(() => {})
+      window.location.reload()
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [user, loading, profileTick])
 

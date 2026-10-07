@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../ui/Logo'
 import { ThemeToggle } from '../ui/ThemeToggle'
+import { AlertsBell } from '../alerts/AlertsUI'
 import { useAuth } from '../../context/AuthContext'
 
 export function MobileHeader() {
@@ -13,6 +14,7 @@ export function MobileHeader() {
         <span className="text-xl font-extrabold tracking-tight text-primary-ink">MonEra</span>
       </Link>
       <div className="flex items-center gap-1">
+        <AlertsBell className="size-10 justify-center" />
         <ThemeToggle />
         <Link to="/configuracion" aria-label="Configuración" className="size-10 rounded-full bg-lavender text-primary-ink font-bold grid place-items-center">
           {initial}

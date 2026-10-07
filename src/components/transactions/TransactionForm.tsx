@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, Trash2 } from 'lucide-react'
+import { ArrowRight, Trash2, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
@@ -11,6 +11,8 @@ import { useData } from '../../context/DataContext'
 import { useUI } from '../../context/UIContext'
 import { removeItem, saveItem } from '../../services/db'
 import { todayStr } from '../../utils/format'
+import { parseQuickEntry } from '../../utils/quickEntry'
+import type { TxPreset } from '../../context/UIContext'
 import { cn } from '../../utils/cn'
 import type { Transaction, TransactionType } from '../../types'
 
@@ -20,27 +22,40 @@ const TYPES: { value: TransactionType; label: string; active: string }[] = [
   { value: 'transfer', label: 'Transferir', active: 'bg-primary text-white' },
 ]
 
-export function TransactionModal({ open, onClose, editing, presetAccountId }: { open: boolean; onClose: () => void; editing: Transaction | null; presetAccountId?: string }) {
+export function TransactionModal({ open, onClose, editing, preset }: { open: boolean; onClose: () => void; editing: Transaction | null; preset?: TxPreset }) {
   return (
     <Modal open={open} onClose={onClose} title={editing ? 'Editar movimiento' : 'Nuevo movimiento'}>
-      <TransactionForm editing={editing} presetAccountId={presetAccountId} onDone={onClose} />
+      <TransactionForm editing={editing} preset={preset} onDone={onClose} />
     </Modal>
   )
 }
 
-function TransactionForm({ editing, presetAccountId, onDone }: { editing: Transaction | null; presetAccountId?: string; onDone: () => void }) {
+function TransactionForm({ editing, preset, onDone }: { editing: Transaction | null; preset?: TxPreset; onDone: () => void }) {
   const { user } = useAuth()
-  const { accounts, categories } = useData()
+  const { accounts, categories, transactions } = useData()
   const { toast, confirm } = useUI()
 
   const options = accounts.filter((a) => a.active || a.id === editing?.accountId || a.id === editing?.toAccountId)
-  const [type, setType] = useState<TransactionType>(editing?.type ?? 'expense')
-  const [amount, setAmount] = useState(editing?.amount ?? 0)
-  const [categoryId, setCategoryId] = useState(editing?.categoryId ?? '')
-  const [description, setDescription] = useState(editing?.description ?? '')
+  const draft = preset?.draft
+  const presetAccountId = draft?.accountId ?? preset?.accountId
+  const [type, setType] = useState<TransactionType>(editing?.type ?? draft?.type ?? 'expense')
+  const [amount, setAmount] = useState(editing?.amount ?? draft?.amount ?? 0)
+  const [categoryId, setCategoryId] = useState(editing?.categoryId ?? draft?.categoryId ?? '')
+  const [description, setDescription] = useState(editing?.description ?? draft?.description ?? '')
   const [accountId, setAccountId] = useState(editing?.accountId ?? options.find((a) => a.id === presetAccountId)?.id ?? options[0]?.id ?? '')
-  const [toAccountId, setToAccountId] = useState(editing?.toAccountId ?? '')
-  const [date, setDate] = useState(editing?.date ?? todayStr())
+  const [toAccountId, setToAccountId] = useState(editing?.toAccountId ?? draft?.toAccountId ?? '')
+  const [date, setDate] = useState(editing?.date ?? draft?.date ?? todayStr())
+  const [quick, setQuick] = useState('')
+
+  // Registro rápido: lo que escribes llena el formulario al instante
+  function onQuick(text: string) {
+    setQuick(text)
+    const d = parseQuickEntry(text, { accounts: options, categories, transactions, today: todayStr() })
+    if (!d) return
+    setType(d.type); setAmount(d.amount); setCategoryId(d.categoryId ?? ''); setDescription(d.description); setDate(d.date)
+    if (d.accountId) setAccountId(d.accountId)
+    setToAccountId(d.toAccountId ?? '')
+  }
   const [notes, setNotes] = useState(editing?.notes ?? '')
   const [saving, setSaving] = useState(false)
 
@@ -94,6 +109,15 @@ function TransactionForm({ editing, presetAccountId, onDone }: { editing: Transa
 
   return (
     <div className="space-y-4">
+      {!editing && (
+        <div className="relative">
+          <Zap size={18} aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+          <input className={cn(inputCls, 'pl-11 bg-lavender/50 border-primary/25')} value={quick} autoFocus={!draft}
+            placeholder='Escribe rápido: "25k almuerzo nequi"' aria-label="Registro rápido"
+            onChange={(e) => onQuick(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); save() } }} />
+        </div>
+      )}
+
       <div role="tablist" aria-label="Tipo de movimiento" className="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-ink/[0.05]">
         {TYPES.map((t) => (
           <button key={t.value} role="tab" aria-selected={type === t.value}
@@ -104,7 +128,7 @@ function TransactionForm({ editing, presetAccountId, onDone }: { editing: Transa
         ))}
       </div>
 
-      <MoneyInput big autoFocus value={amount} onChange={setAmount} />
+      <MoneyInput big autoFocus={!!editing} value={amount} onChange={setAmount} />
 
       {type !== 'transfer' && (
         <fieldset>

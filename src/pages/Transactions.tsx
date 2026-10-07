@@ -7,6 +7,7 @@ import { PageHeader } from '../components/ui/PageHeader'
 import { Skeleton } from '../components/ui/Skeleton'
 import { inputCls } from '../components/ui/Field'
 import { TransactionRow } from '../components/transactions/TransactionRow'
+import { QuickAdd } from '../components/transactions/QuickAdd'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
 import { friendlyDate, formatCOP, monthKey, todayStr } from '../utils/format'
@@ -44,6 +45,7 @@ export default function Transactions() {
     <>
       <PageHeader title="Movimientos" subtitle="Todo lo que entra y sale de tus cuentas" />
       <div className="space-y-4">
+        <QuickAdd />
         <MonthNav month={month} onChange={setMonth} />
 
         <div className="grid grid-cols-2 gap-3">

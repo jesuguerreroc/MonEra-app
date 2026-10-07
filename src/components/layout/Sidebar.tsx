@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { Moon, Plus, Sun } from 'lucide-react'
 import { MAIN_NAV } from './nav'
 import { Logo } from '../ui/Logo'
+import { AlertsBell } from '../alerts/AlertsUI'
 import { useUI } from '../../context/UIContext'
 import { useTheme } from '../../context/ThemeContext'
 import { cn } from '../../utils/cn'
@@ -35,8 +36,10 @@ export function Sidebar() {
         ))}
       </nav>
 
+      <AlertsBell withLabel className="mt-auto justify-center lg:justify-start rounded-xl min-h-11 px-3 text-[15px] font-medium" />
+
       <button onClick={toggle} title={dark ? 'Modo claro' : 'Modo oscuro'} aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'}
-        className="mt-auto flex items-center justify-center lg:justify-start gap-3 rounded-xl min-h-11 px-3 text-[15px] font-medium text-muted hover:bg-ink/5 hover:text-ink transition">
+        className="flex items-center justify-center lg:justify-start gap-3 rounded-xl min-h-11 px-3 text-[15px] font-medium text-muted hover:bg-ink/5 hover:text-ink transition">
         {dark ? <Sun size={20} /> : <Moon size={20} />}<span className="hidden lg:inline">{dark ? 'Modo claro' : 'Modo oscuro'}</span>
       </button>
     </aside>

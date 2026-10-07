@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { UIProvider } from './context/UIContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { AlertsProvider } from './context/AlertsContext'
 import AppLayout from './layouts/AppLayout'
 import AuthPage from './pages/AuthPage'
 import Dashboard from './pages/Dashboard'
@@ -33,22 +34,24 @@ function Gate() {
   return (
     <DataProvider>
       <UIProvider>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="movimientos" element={<Transactions />} />
-            <Route path="cuentas" element={<Accounts />} />
-            <Route path="cuentas/:id" element={<AccountDetail />} />
-            <Route path="presupuestos" element={<Budgets />} />
-            <Route path="deudas" element={<LoansPage cfg={DEBT_CONFIG} />} />
-            <Route path="me-deben" element={<LoansPage cfg={RECEIVABLE_CONFIG} />} />
-            <Route path="metas" element={<Goals />} />
-            <Route path="reportes" element={<Reports />} />
-            <Route path="configuracion" element={<Settings />} />
-            <Route path="mas" element={<More />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
+        <AlertsProvider>
+          <Routes>
+            <Route element={<AppLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="movimientos" element={<Transactions />} />
+              <Route path="cuentas" element={<Accounts />} />
+              <Route path="cuentas/:id" element={<AccountDetail />} />
+              <Route path="presupuestos" element={<Budgets />} />
+              <Route path="deudas" element={<LoansPage cfg={DEBT_CONFIG} />} />
+              <Route path="me-deben" element={<LoansPage cfg={RECEIVABLE_CONFIG} />} />
+              <Route path="metas" element={<Goals />} />
+              <Route path="reportes" element={<Reports />} />
+              <Route path="configuracion" element={<Settings />} />
+              <Route path="mas" element={<More />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </AlertsProvider>
       </UIProvider>
     </DataProvider>
   )

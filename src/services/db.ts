@@ -10,17 +10,28 @@ function clean(obj: object): Record<string, unknown> {
   return JSON.parse(JSON.stringify(obj)) as Record<string, unknown>
 }
 
+/**
+ * Sin internet, Firebase guarda el cambio en el dispositivo al instante, pero la promesa no termina
+ * hasta que el servidor lo confirma (al volver la señal). Para no dejar el botón "Guardando…" colgado,
+ * sin conexión damos el cambio por hecho y Firebase lo sincroniza solo después.
+ */
+function commit(write: Promise<void>): Promise<void> {
+  if (navigator.onLine) return write
+  write.catch(() => {})
+  return Promise.resolve()
+}
+
 /** Crea (sin id) o reemplaza (con id) un documento del usuario. Devuelve el id. */
 export async function saveItem(uid: string, name: CollectionName, item: { id?: string; [key: string]: unknown }): Promise<string> {
   const ref = item.id ? doc(db, 'users', uid, name, item.id) : doc(collection(db, 'users', uid, name))
   const data = clean(item)
   delete data.id
-  await setDoc(ref, data)
+  await commit(setDoc(ref, data))
   return ref.id
 }
 
 export async function removeItem(uid: string, name: CollectionName, id: string): Promise<void> {
-  await deleteDoc(doc(db, 'users', uid, name, id))
+  await commit(deleteDoc(doc(db, 'users', uid, name, id)))
 }
 
 /** Crea las categorías predeterminadas (ids fijos, así nunca se duplican). */

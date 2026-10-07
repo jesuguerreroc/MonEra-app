@@ -10,6 +10,9 @@ import { IncomeExpenseChart } from '../components/charts/IncomeExpenseChart'
 import { CategoryDonut } from '../components/charts/CategoryDonut'
 import { TransactionRow } from '../components/transactions/TransactionRow'
 import { BudgetCard } from '../components/budgets/BudgetCard'
+import { InstallBanner } from '../components/ui/InstallApp'
+import { QuickAdd } from '../components/transactions/QuickAdd'
+import { AlertsSummary } from '../components/alerts/AlertsUI'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
@@ -60,6 +63,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5">
+      <InstallBanner />
+      <QuickAdd />
+      <AlertsSummary />
       <BalanceHero name={firstName} total={d.totalBalance} accountsCount={activeAccounts.length} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

@@ -12,3 +12,15 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# El service worker y el manifest deben revisarse siempre (si no, la app instalada tardaría en actualizarse)
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "no-cache"
