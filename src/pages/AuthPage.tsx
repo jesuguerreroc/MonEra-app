@@ -1,4 +1,5 @@
 import { useId, useState, type FormEvent, type InputHTMLAttributes, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { AlertCircle, ArrowDownLeft, ArrowLeft, CheckCircle2, Eye, EyeOff, Lock, Mail, PieChart, ShieldCheck, Target, User, Zap, type LucideIcon } from 'lucide-react'
 import { authErrorMessage, useAuth } from '../context/AuthContext'
 import { Button } from '../components/ui/Button'
@@ -6,6 +7,7 @@ import { inputCls } from '../components/ui/Field'
 import { Logo } from '../components/ui/Logo'
 import { ThemeToggle } from '../components/ui/ThemeToggle'
 import { cn } from '../utils/cn'
+import { isStandalone } from '../utils/pwa'
 
 type Mode = 'login' | 'register' | 'reset'
 
@@ -17,9 +19,9 @@ const COPY: Record<Mode, { title: string; text: string; cta: string }> = {
 
 const BRAND_BG = 'bg-gradient-to-br from-[#8b6ff7] via-primary to-primary-dark'
 
-export default function AuthPage() {
+export default function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'register' }) {
   const { login, register, loginWithGoogle, resetPassword } = useAuth()
-  const [mode, setMode] = useState<Mode>('login')
+  const [mode, setMode] = useState<Mode>(initialMode)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -56,6 +58,11 @@ export default function AuthPage() {
 
   return (
     <div className="relative min-h-dvh lg:grid lg:grid-cols-[1.1fr_1fr]">
+      {!isStandalone() && (
+        <Link to="/" className="absolute z-20 left-3 top-[max(0.75rem,env(safe-area-inset-top))] inline-flex items-center gap-1.5 rounded-full px-3 min-h-10 text-sm font-medium text-white/85 hover:bg-white/15 hover:text-white transition">
+          <ArrowLeft size={16} />Volver
+        </Link>
+      )}
       <ThemeToggle className="absolute z-20 right-3 top-[max(0.75rem,env(safe-area-inset-top))] text-white/85 hover:bg-white/15 hover:text-white lg:text-muted lg:hover:bg-ink/5 lg:hover:text-ink" />
 
       <BrandPanel />
@@ -193,7 +200,7 @@ const glass = 'rounded-2xl bg-white/12 ring-1 ring-white/25 backdrop-blur-md sha
 /** Escritorio: panel de marca con titular y una vista previa de la app. */
 function BrandPanel() {
   return (
-    <aside className={cn('hidden lg:flex relative overflow-hidden flex-col justify-between gap-10 p-12 xl:p-14 text-white min-h-dvh', BRAND_BG)}>
+    <aside className={cn('hidden lg:flex relative overflow-hidden flex-col justify-between gap-10 p-12 pt-20 xl:p-14 xl:pt-20 text-white min-h-dvh', BRAND_BG)}>
       <Blobs />
 
       <div className="relative flex items-center gap-3">

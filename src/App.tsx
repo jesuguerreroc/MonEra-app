@@ -6,6 +6,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import { AlertsProvider } from './context/AlertsContext'
 import AppLayout from './layouts/AppLayout'
 import AuthPage from './pages/AuthPage'
+import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
 import Accounts from './pages/Accounts'
@@ -17,6 +18,7 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import More from './pages/More'
 import { Logo } from './components/ui/Logo'
+import { isStandalone } from './utils/pwa'
 
 function Splash() {
   return (
@@ -26,11 +28,21 @@ function Splash() {
   )
 }
 
-/** Si no hay sesión muestra login/registro; si hay, la app. */
+/** Sin sesión: página de presentación, inicio de sesión y registro. Con sesión: la app. */
 function Gate() {
   const { user, loading } = useAuth()
   if (loading) return <Splash />
-  if (!user) return <AuthPage />
+  if (!user) {
+    return (
+      <Routes>
+        {/* La app instalada (PWA) va directo a iniciar sesión; en el navegador se muestra la presentación */}
+        <Route path="/" element={isStandalone() ? <AuthPage /> : <Landing />} />
+        <Route path="/entrar" element={<AuthPage key="login" initialMode="login" />} />
+        <Route path="/registro" element={<AuthPage key="register" initialMode="register" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    )
+  }
   return (
     <DataProvider>
       <UIProvider>
