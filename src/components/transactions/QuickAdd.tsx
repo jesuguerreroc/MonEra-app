@@ -67,7 +67,7 @@ export function QuickAdd() {
         <div className="relative flex-1">
           <Zap size={18} aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
           <input className={cn(inputCls, 'pl-11')} value={text} onChange={(e) => setText(e.target.value)}
-            placeholder='Registro rápido: "25k almuerzo nequi"' aria-label="Registro rápido" enterKeyHint="done"
+            placeholder='Ej: 25k almuerzo nequi' aria-label="Registro rápido" enterKeyHint="done"
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (missing) adjust(); else save() } }} />
         </div>
         <button type="button" onClick={() => setHelp((v) => !v)} aria-expanded={help} aria-label="Cómo escribir"

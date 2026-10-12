@@ -27,10 +27,11 @@ export function Modal({ open, onClose, title, children }: Props) {
       <div className="absolute inset-0 bg-black/45 dark:bg-black/65 backdrop-blur-[2px] animate-fade" onClick={onClose} />
       <div
         role="dialog" aria-modal="true" aria-label={title}
-        className="relative w-full md:max-w-md max-h-[92dvh] overflow-y-auto bg-surface border-line dark:border rounded-t-3xl md:rounded-3xl p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] animate-sheet shadow-xl"
+        className="relative w-full md:max-w-md max-h-[92dvh] overflow-y-auto bg-surface border-line dark:border rounded-t-[2rem] md:rounded-[1.75rem] p-5 md:p-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] animate-sheet shadow-xl"
       >
+        <div aria-hidden className="md:hidden mx-auto -mt-1.5 mb-3 h-1.5 w-10 rounded-full bg-ink/15" />
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold">{title}</h2>
+          <h2 className="text-xl font-bold tracking-tight">{title}</h2>
           <button aria-label="Cerrar" onClick={onClose} className="size-10 grid place-items-center rounded-full hover:bg-ink/5">
             <X size={20} />
           </button>

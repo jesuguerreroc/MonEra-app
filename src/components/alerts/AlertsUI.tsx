@@ -11,7 +11,7 @@ export function AlertsBell({ withLabel, className }: { withLabel?: boolean; clas
   const urgent = alerts.some((a) => a.level !== 'info')
   return (
     <button onClick={openPanel} title="Alertas" aria-label={`Alertas${alerts.length ? ` (${alerts.length})` : ''}`}
-      className={cn('relative flex items-center gap-3 rounded-full text-muted hover:bg-ink/5 hover:text-ink transition', className)}>
+      className={cn('relative inline-flex items-center justify-center gap-3 text-muted hover:bg-ink/5 hover:text-ink transition', className)}>
       <span className="relative grid place-items-center">
         <Bell size={20} />
         {alerts.length > 0 && (

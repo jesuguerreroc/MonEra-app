@@ -35,7 +35,7 @@ export default function Budgets() {
               <div className="flex justify-between text-sm mb-2"><span className="font-semibold">Total presupuestado</span><span className="text-muted">{formatCOP(totalSpent)} / {formatCOP(totalLimit)}</span></div>
               <ProgressBar value={percent(totalSpent, totalLimit)} tone={totalSpent > totalLimit ? 'danger' : 'primary'} label="Presupuesto total" />
             </Card>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {budgets.map((b) => <BudgetCard key={b.id} category={categoryById(b.categoryId)} limit={b.amount} spent={spentBy[b.categoryId] ?? 0} onClick={() => setModal({ editing: b })} />)}
             </div>
           </>

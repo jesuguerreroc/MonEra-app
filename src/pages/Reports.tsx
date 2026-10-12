@@ -68,7 +68,7 @@ export default function Reports() {
         </div>
 
         <Card><SectionTitle title="Ingresos y gastos por mes" /><IncomeExpenseChart data={monthSeries(d.transactions, months)} /></Card>
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <Card><SectionTitle title="Gastos por categoría" />{slices.length ? <CategoryDonut slices={slices} /> : <p className="text-sm text-muted py-10 text-center">Sin gastos en este mes.</p>}</Card>
           <Card><SectionTitle title="Evolución del saldo" /><BalanceLine data={balanceSeries(d.accounts, d.transactions, months)} /></Card>
         </div>

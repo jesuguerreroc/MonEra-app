@@ -32,7 +32,7 @@ export default function Goals() {
       {loading ? <Skeleton className="h-56 rounded-card" /> : goals.length === 0 ? (
         <Card><EmptyState icon={Target} title="Aún no tienes metas" text="Crea una meta (una casa, un viaje, un fondo de emergencia) y registra tus aportes para ver cómo avanzas." actionLabel="Crear meta" onAction={() => setForm({ editing: null })} /></Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {goals.map((g) => (
             <GoalCard key={g.id} goal={g} onEdit={() => setForm({ editing: g })} onContribute={() => setAdding(g)}
               onDeleteContribution={async (id) => {

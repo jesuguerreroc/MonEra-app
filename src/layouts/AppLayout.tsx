@@ -36,17 +36,18 @@ export default function AppLayout() {
     return () => document.removeEventListener('keydown', onKey)
   }, [openTx])
   return (
-    <div className="min-h-dvh md:flex">
+    <div className="relative isolate min-h-dvh md:flex">
+      <div aria-hidden className="aurora fixed inset-0 -z-10 pointer-events-none" />
       <Sidebar />
       <div className="flex-1 min-w-0">
         <MobileHeader />
-        <main key={pathname} className="animate-rise mx-auto max-w-6xl px-4 md:px-8 pt-2 md:pt-8 pb-32 md:pb-12">
+        <main key={pathname} className="animate-rise mx-auto max-w-6xl px-4 md:px-8 lg:px-10 pt-3 md:pt-10 pb-36 md:pb-12">
           {!online && (
-            <div role="status" className="mb-4 flex items-center gap-2 rounded-xl bg-warning/10 text-warning px-4 py-3 text-sm font-medium">
+            <div role="status" className="mb-4 flex items-center gap-2 rounded-2xl bg-warning/10 text-warning px-4 py-3 text-sm font-medium">
               <CloudOff size={18} className="shrink-0" />Sin conexión. Puedes seguir registrando: se guardará y se subirá solo al volver internet.
             </div>
           )}
-          {error && <div role="alert" className="mb-4 rounded-xl bg-danger/10 text-danger px-4 py-3 text-sm font-medium">{error}</div>}
+          {error && <div role="alert" className="mb-4 rounded-2xl bg-danger/10 text-danger px-4 py-3 text-sm font-medium">{error}</div>}
           <Outlet />
         </main>
       </div>

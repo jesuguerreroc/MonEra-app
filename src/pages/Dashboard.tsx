@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowDownLeft, ArrowUpRight, CalendarClock, PiggyBank, Receipt, Target, Wallet, HandCoins } from 'lucide-react'
+import { CalendarClock, CreditCard, HandCoins, PiggyBank, Receipt, Target, Wallet } from 'lucide-react'
 import { BalanceHero } from '../components/dashboard/BalanceHero'
 import { StatCard } from '../components/dashboard/StatCard'
 import { Card, SectionTitle } from '../components/ui/Card'
@@ -31,6 +31,8 @@ export default function Dashboard() {
   const month = monthKey(todayStr())
   const { income, expense } = monthTotals(d.transactions, month)
   const owed = d.debts.reduce((s, l) => s + loanRemaining(l), 0)
+  const owedToMe = d.receivables.reduce((s, l) => s + loanRemaining(l), 0)
+  const inGoals = d.goals.reduce((s, g) => s + goalSaved(g), 0)
   const firstName = (user?.displayName ?? user?.email ?? '').split(/[ @]/)[0] || 'tú'
   const activeAccounts = d.accounts.filter((a) => a.active)
   // Dinero ahorrado = saldo actual de tus cuentas de tipo "Ahorros" (activas)
@@ -52,7 +54,7 @@ export default function Dashboard() {
   if (activeAccounts.length === 0) {
     return (
       <>
-        <BalanceHero name={firstName} total={0} accountsCount={0} />
+        <BalanceHero name={firstName} total={0} accountsCount={0} income={0} expense={0} />
         <Card className="mt-4">
           <EmptyState icon={Wallet} title="Empieza creando tu primera cuenta" text="Agrega dónde guardas tu dinero y registra tu primer movimiento: en 5 segundos verás cómo están tus finanzas."
             actionLabel="Crear cuenta" onAction={() => navigate('/cuentas')} />
@@ -64,19 +66,24 @@ export default function Dashboard() {
   return (
     <div className="space-y-5">
       <InstallBanner />
-      <QuickAdd />
-      <AlertsSummary />
-      <BalanceHero name={firstName} total={d.totalBalance} accountsCount={activeAccounts.length} />
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Ingresos del mes" amount={income} icon={ArrowDownLeft} tone="bg-success/10 text-success" />
-        <StatCard label="Gastos del mes" amount={expense} icon={ArrowUpRight} tone="bg-primary/10 text-primary" />
-        <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-lavender text-primary-ink"
-          hint={savingsAccounts.length ? `En ${savingsAccounts.length} ${savingsAccounts.length === 1 ? 'cuenta' : 'cuentas'} de ahorro` : 'Sin cuentas de ahorro'} />
-        <StatCard label="Deudas pendientes" amount={owed} icon={HandCoins} tone="bg-danger/10 text-danger" />
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.35fr_1fr] xl:items-start">
+        <BalanceHero name={firstName} total={d.totalBalance} accountsCount={activeAccounts.length} income={income} expense={expense} />
+        <div className="space-y-4 min-w-0">
+          <QuickAdd />
+          <AlertsSummary />
+        </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-primary/12 text-primary-ink" to="/cuentas"
+          hint={savingsAccounts.length ? `En ${savingsAccounts.length} ${savingsAccounts.length === 1 ? 'cuenta' : 'cuentas'} de ahorro` : 'Sin cuentas de ahorro'} />
+        <StatCard label="Deudas pendientes" amount={owed} icon={CreditCard} tone="bg-danger/10 text-danger" to="/deudas" />
+        <StatCard label="Me deben" amount={owedToMe} icon={HandCoins} tone="bg-success/10 text-success" to="/me-deben" />
+        <StatCard label="En metas de ahorro" amount={inGoals} icon={Target} tone="bg-[#3b82f6]/12 text-[#3b82f6]" to="/metas"
+          hint={d.goals.length ? `${d.goals.length} ${d.goals.length === 1 ? 'meta' : 'metas'}` : 'Sin metas todavía'} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <SectionTitle title="Ingresos vs gastos" />
           <IncomeExpenseChart data={monthSeries(d.transactions, lastMonths(6, month))} />
@@ -87,7 +94,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <SectionTitle title="Últimos movimientos" action={seeAll('/movimientos')} />
           {d.transactions.length === 0 ? (
@@ -105,7 +112,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <SectionTitle title="Metas de ahorro" action={seeAll('/metas')} />
           {goals.length === 0 ? <p className="text-sm text-muted py-8 text-center">Define una meta y ve cómo avanzas.</p> : (

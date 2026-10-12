@@ -79,7 +79,7 @@ export default function LoansPage({ cfg }: { cfg: LoanConfig }) {
             : <EmptyState icon={History} title="Historial vacío" text={cfg.historyEmptyText} />}
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {shown.map((l) => (
             <LoanCard key={l.id} loan={l} cfg={cfg} onEdit={() => setForm({ editing: l })} onPay={() => setPaying(l)}
               onDeletePayment={async (id) => {

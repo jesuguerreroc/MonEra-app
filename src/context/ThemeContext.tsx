@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', resolved === 'dark')
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#0f0d16' : '#f7f7fb')
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#0b0a11' : '#f4f3fa')
   }, [resolved])
 
   const setTheme = useCallback((t: ThemePref) => {
