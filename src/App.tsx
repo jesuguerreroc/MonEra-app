@@ -9,6 +9,7 @@ import AppLayout from './layouts/AppLayout'
 import AuthPage from './pages/AuthPage'
 import Landing from './pages/Landing'
 import RecurringPage from './pages/RecurringPage'
+import MonthSummaryPage from './pages/MonthSummary'
 import { RecurringRunner } from './components/recurring/RecurringRunner'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
@@ -54,6 +55,7 @@ function Gate() {
             <RecurringRunner />
             <PrivacyBoundary>
               <Routes>
+                <Route path="resumen/:month?" element={<MonthSummaryPage />} />
                 <Route element={<AppLayout />}>
                   <Route index element={<Dashboard />} />
                   <Route path="movimientos" element={<Transactions />} />

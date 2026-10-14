@@ -14,6 +14,7 @@ import { InstallBanner } from '../components/ui/InstallApp'
 import { QuickAdd } from '../components/transactions/QuickAdd'
 import { AlertsSummary } from '../components/alerts/AlertsUI'
 import { RecurringDue } from '../components/recurring/RecurringDue'
+import { SummaryBanner } from '../components/dashboard/SummaryBanner'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
@@ -67,6 +68,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-5">
       <InstallBanner />
+      <SummaryBanner />
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.35fr_1fr] xl:items-start">
         <BalanceHero name={firstName} total={d.totalBalance} accountsCount={activeAccounts.length} income={income} expense={expense} />
         <div className="space-y-4 min-w-0">

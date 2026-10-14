@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { BarChart3 } from 'lucide-react'
+import { BarChart3, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Card, SectionTitle } from '../components/ui/Card'
 import { EmptyState } from '../components/ui/EmptyState'
 import { MonthNav } from '../components/ui/MonthNav'
@@ -54,6 +55,11 @@ export default function Reports() {
       <PageHeader title="Reportes" subtitle="Entiende a dónde va tu dinero" />
       <div className="space-y-5">
         <MonthNav month={month} onChange={setMonth} />
+        <Link to={`/resumen/${month}`}
+          className="flex items-center gap-3 rounded-2xl p-3 pr-4 text-white bg-[radial-gradient(120%_140%_at_0%_0%,#3b82f6_0%,#6c4cf1_55%,#4930b8_100%)] shadow-float hover:brightness-110 transition">
+          <span className="size-10 rounded-xl bg-white/15 ring-1 ring-white/25 grid place-items-center shrink-0"><Sparkles size={18} /></span>
+          <span className="flex-1 min-w-0"><b className="block">Ver el resumen de <span className="capitalize">{monthLabel(month).replace(/ de \d{4}$/, '')}</span></b><span className="text-xs text-white/80">Tu mes en tarjetas: lo más importante de un vistazo</span></span>
+        </Link>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           <Card className="!p-4 col-span-2 lg:col-span-1 bg-lavender border-transparent">
