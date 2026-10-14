@@ -3,7 +3,7 @@ import { db } from '../firebase/config'
 import { DEFAULT_CATEGORIES } from '../constants/categories'
 
 export type CollectionName =
-  | 'accounts' | 'categories' | 'transactions' | 'debts' | 'receivables' | 'budgets' | 'goals'
+  | 'accounts' | 'categories' | 'transactions' | 'debts' | 'receivables' | 'budgets' | 'goals' | 'recurring'
 
 /** Firestore no acepta `undefined`; esto lo elimina. */
 function clean(obj: object): Record<string, unknown> {

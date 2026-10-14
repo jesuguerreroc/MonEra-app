@@ -35,6 +35,9 @@ export interface Transaction {
   date: string
   notes?: string
   createdAt: number
+  /** Si salió de un pago fijo: cuál y de qué fecha (AAAA-MM-DD) */
+  recurringId?: string
+  occurrence?: string
 }
 
 export interface Payment {
@@ -70,5 +73,34 @@ export interface Goal {
   target: number
   targetDate?: string
   contributions: Payment[]
+  createdAt: number
+}
+
+/** mensual (un día del mes) · quincenal (15 y último día) · semanal (un día de la semana) · anual (día y mes) */
+export type Frequency = 'monthly' | 'biweekly' | 'weekly' | 'yearly'
+
+/** Pago o ingreso fijo que se repite (arriendo, internet, salario…) */
+export interface Recurring {
+  id: string
+  name: string
+  type: TransactionType
+  /** Monto fijo; si variable es true se pide al registrar (luz, agua, gas) */
+  amount: number
+  variable: boolean
+  categoryId?: string
+  accountId: string
+  toAccountId?: string
+  frequency: Frequency
+  /** mensual/anual: día del mes (1-31) · semanal: día de la semana (0 = domingo) */
+  day: number
+  /** anual: mes (1-12) */
+  month?: number
+  /** Desde cuándo aplica (AAAA-MM-DD) */
+  startDate: string
+  /** Registrar solo sin preguntar (solo con monto fijo) */
+  auto: boolean
+  active: boolean
+  /** Fechas que decidiste omitir (AAAA-MM-DD) */
+  skipped: string[]
   createdAt: number
 }

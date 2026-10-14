@@ -1,6 +1,7 @@
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { formatCOP, formatDate, todayStr } from '../../utils/format'
 import { useCountUp } from '../../utils/useCountUp'
+import { PrivacyToggle } from '../../context/PrivacyContext'
 
 interface Props { name: string; total: number; accountsCount: number; income: number; expense: number }
 
@@ -15,7 +16,9 @@ export function BalanceHero({ name, total, accountsCount, income, expense }: Pro
       <div aria-hidden className="absolute inset-0 -z-10 opacity-[.12] bg-[radial-gradient(rgba(255,255,255,.9)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:linear-gradient(to_left,black,transparent_70%)]" />
 
       <p className="text-white/75 text-sm">Hola, <span className="font-semibold text-white">{name}</span> · {formatDate(todayStr())}</p>
-      <p className="text-white/80 text-sm mt-5">Saldo total</p>
+      <p className="text-white/80 text-sm mt-5 flex items-center gap-1">Saldo total
+        <PrivacyToggle size={17} className="size-9 -my-2 rounded-full text-white/75 hover:text-white hover:bg-white/15" />
+      </p>
       <p className="text-[2.6rem] leading-none md:text-6xl font-extrabold tracking-tight tabular-nums mt-2" aria-label={formatCOP(total)}>{formatCOP(shown)}</p>
       <p className="text-white/65 text-xs mt-2">{accountsCount} {accountsCount === 1 ? 'cuenta activa' : 'cuentas activas'}</p>
 

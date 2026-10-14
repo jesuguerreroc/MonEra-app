@@ -13,6 +13,7 @@ import { BudgetCard } from '../components/budgets/BudgetCard'
 import { InstallBanner } from '../components/ui/InstallApp'
 import { QuickAdd } from '../components/transactions/QuickAdd'
 import { AlertsSummary } from '../components/alerts/AlertsUI'
+import { RecurringDue } from '../components/recurring/RecurringDue'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
@@ -73,6 +74,8 @@ export default function Dashboard() {
           <AlertsSummary />
         </div>
       </div>
+
+      <RecurringDue />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard label="Dinero ahorrado" amount={saved} icon={PiggyBank} tone="bg-primary/12 text-primary-ink" to="/cuentas"

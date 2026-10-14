@@ -1,8 +1,9 @@
-import type { Account, Budget, Category, Loan, Transaction } from '../types'
+import type { Account, Budget, Category, Loan, Recurring, Transaction } from '../types'
+import { recurringAgenda } from './recurring'
 import { expensesByCategory, loanRemaining } from './finance'
 import { daysUntil, formatCOP, formatDate, monthKey, shiftMonth } from './format'
 
-export type AlertKind = 'budget' | 'pace' | 'unusual' | 'big' | 'due' | 'receivable' | 'negative' | 'habit'
+export type AlertKind = 'budget' | 'pace' | 'unusual' | 'big' | 'due' | 'receivable' | 'negative' | 'habit' | 'recurring'
 export type AlertLevel = 'danger' | 'warning' | 'info'
 
 export interface AppAlert {
@@ -23,7 +24,7 @@ export interface AlertPrefs {
 }
 
 export const DEFAULT_ALERT_PREFS: AlertPrefs = {
-  enabled: { budget: true, pace: true, unusual: true, big: true, due: true, receivable: true, negative: true, habit: true },
+  enabled: { budget: true, pace: true, unusual: true, big: true, due: true, receivable: true, negative: true, habit: true, recurring: true },
   budgetThreshold: 80,
 }
 
@@ -36,6 +37,7 @@ export const ALERT_KIND_LABEL: Record<AlertKind, { label: string; hint: string }
   receivable: { label: 'Cobros atrasados', hint: 'Alguien no te pagó en la fecha acordada' },
   negative: { label: 'Cuentas en negativo', hint: 'Una cuenta quedó por debajo de $0' },
   habit: { label: 'Recordatorio de registro', hint: 'Si llevas 4 días sin registrar nada' },
+  recurring: { label: 'Pagos fijos', hint: 'Pendientes por confirmar o cuenta que no alcanza para los próximos' },
 }
 
 interface Input {
@@ -46,6 +48,7 @@ interface Input {
   budgets: Budget[]
   debts: Loan[]
   receivables: Loan[]
+  recurring: Recurring[]
   today: string
   prefs: AlertPrefs
 }
@@ -171,6 +174,30 @@ export function computeAlerts(d: Input): AppAlert[] {
       out.push({ id: `habit:${last}`, kind: 'habit', level: 'info', to: '/movimientos',
         title: `No registras movimientos hace ${gap} días`,
         text: '¿Se te pasó algún gasto? Puedes registrarlo rápido escribiendo, por ejemplo, "25k almuerzo".' })
+    }
+  }
+
+  // ---- Pagos fijos: pendientes por confirmar y cuentas que no alcanzan para los próximos 7 días ----
+  if (on.recurring && d.recurring.length) {
+    const agenda = recurringAgenda(d.recurring, new Set(d.transactions.map((t) => t.id)), d.today, 7)
+    const due = agenda.filter((i) => i.state === 'due')
+    if (due.length) {
+      out.push({ id: `rec-due:${due.map((i) => i.r.id + i.date).join(',')}`, kind: 'recurring', level: 'warning', to: '/pagos-fijos',
+        title: due.length === 1 ? `Falta confirmar: ${due[0].r.name}` : `Tienes ${due.length} pagos fijos por confirmar`,
+        text: due.slice(0, 3).map((i) => i.r.name).join(', ') + (due.length > 3 ? '…' : '') + '. Regístralos o márcalos como omitidos.' })
+    }
+    const needs = new Map<string, number>()
+    for (const { r } of agenda) {
+      if (r.type === 'income' || r.variable) continue
+      needs.set(r.accountId, (needs.get(r.accountId) ?? 0) + r.amount)
+    }
+    for (const [accountId, need] of needs) {
+      const a = d.accounts.find((x) => x.id === accountId)
+      const bal = d.balances[accountId] ?? 0
+      if (!a || a.type === 'credit_card' || bal >= need) continue
+      out.push({ id: `rec-short:${accountId}:${d.today}`, kind: 'recurring', level: 'warning', to: `/cuentas/${accountId}`,
+        title: `${a.name} no alcanza para tus pagos fijos`,
+        text: `Tiene ${formatCOP(bal)} y en los próximos 7 días tienes pagos por ${formatCOP(need)}. Faltan ${formatCOP(need - bal)}.` })
     }
   }
 

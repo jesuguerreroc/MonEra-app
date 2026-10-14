@@ -3,6 +3,7 @@ import { ChevronRight, Moon, Plus, Sun } from 'lucide-react'
 import { MAIN_NAV } from './nav'
 import { Logo } from '../ui/Logo'
 import { AlertsBell } from '../alerts/AlertsUI'
+import { PrivacyToggle } from '../../context/PrivacyContext'
 import { useAuth } from '../../context/AuthContext'
 import { useUI } from '../../context/UIContext'
 import { useTheme } from '../../context/ThemeContext'
@@ -53,6 +54,7 @@ export function Sidebar() {
         <div className="mt-auto pt-3 border-t border-line/70 flex flex-col gap-2">
           <div className="flex flex-col lg:flex-row items-center gap-1">
             <AlertsBell className={iconBtn} />
+            <PrivacyToggle className={iconBtn} />
             <button onClick={toggle} title={dark ? 'Modo claro' : 'Modo oscuro'} aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'} className={iconBtn}>
               {dark ? <Sun size={20} /> : <Moon size={20} />}
             </button>

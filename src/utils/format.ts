@@ -5,12 +5,19 @@ export function groupDigits(n: number): string {
   return String(Math.round(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
+// Modo privado: lo activa PrivacyContext; con él, todos los montos se muestran como "$ •••••"
+let hideAmounts = false
+export function setHideAmounts(v: boolean) { hideAmounts = v }
+export const HIDDEN_AMOUNT = '$ •••••'
+
 export function formatCOP(amount: number): string {
+  if (hideAmounts) return HIDDEN_AMOUNT
   return `${amount < 0 ? '-' : ''}$${groupDigits(amount)}`
 }
 
 /** Para ejes de gráficas: 1.300.000 -> "$1,3 M" */
 export function formatCompact(n: number): string {
+  if (hideAmounts) return '•••'
   const a = Math.abs(n)
   if (a >= 1_000_000) return `$${(n / 1_000_000).toFixed(1).replace('.', ',')} M`
   if (a >= 1_000) return `$${Math.round(n / 1_000)} mil`

@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
 import { useTheme, type ThemePref } from '../context/ThemeContext'
+import { usePrivacy } from '../context/PrivacyContext'
 import { cn } from '../utils/cn'
 
 const THEMES: { value: ThemePref; label: string; icon: typeof Sun }[] = [
@@ -25,6 +26,7 @@ export default function Settings() {
   const { categories, transactions, budgets } = useData()
   const { toast, confirm } = useUI()
   const { theme, setTheme } = useTheme()
+  const privacy = usePrivacy()
   const [creating, setCreating] = useState(false)
 
   async function removeCategory(id: string, name: string) {
@@ -67,6 +69,13 @@ export default function Settings() {
             ))}
           </div>
           <p className="text-xs text-muted mt-2">"Sistema" usa el mismo tema que tu teléfono o computador.</p>
+          <label className="mt-4 pt-4 border-t border-line flex items-center gap-3 min-h-12 cursor-pointer">
+            <span className="flex-1">
+              <span className="block text-sm font-medium">Modo privado</span>
+              <span className="block text-xs text-muted">Oculta todos los montos ($ •••••). También con el ícono del ojo.</span>
+            </span>
+            <input type="checkbox" className="size-5 accent-[#6c4cf1]" checked={privacy.hidden} onChange={privacy.toggle} />
+          </label>
         </Card>
 
         <AlertsSettings />

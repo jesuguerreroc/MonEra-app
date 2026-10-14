@@ -29,7 +29,7 @@ service cloud.firestore {
       match /{coll}/{id} {
         allow read, delete: if isOwner(userId);
         allow create, update: if isOwner(userId)
-          && coll in ['accounts', 'categories', 'debts', 'receivables', 'budgets', 'goals'];
+          && coll in ['accounts', 'categories', 'debts', 'receivables', 'budgets', 'goals', 'recurring'];
       }
     }
 

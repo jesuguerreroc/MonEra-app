@@ -4,7 +4,7 @@ import { db } from '../firebase/config'
 import { useAuth } from './AuthContext'
 import { seedCategories, type CollectionName } from '../services/db'
 import { accountBalance } from '../utils/finance'
-import type { Account, Budget, Category, Goal, Loan, Transaction } from '../types'
+import type { Account, Budget, Category, Goal, Loan, Recurring, Transaction } from '../types'
 
 interface DataValue {
   loading: boolean
@@ -16,6 +16,9 @@ interface DataValue {
   receivables: Loan[]
   budgets: Budget[]
   goals: Goal[]
+  recurring: Recurring[]
+  /** true si Firebase aún no permite la lista de pagos fijos (faltan las reglas nuevas) */
+  recurringBlocked: boolean
   balances: Record<string, number>
   totalBalance: number
   categoryById: (id?: string) => Category | undefined
@@ -23,13 +26,13 @@ interface DataValue {
 }
 
 const DataContext = createContext<DataValue | null>(null)
-const NAMES: CollectionName[] = ['accounts', 'categories', 'transactions', 'debts', 'receivables', 'budgets', 'goals']
+const NAMES: CollectionName[] = ['accounts', 'categories', 'transactions', 'debts', 'receivables', 'budgets', 'goals', 'recurring']
 
 type Store = {
   accounts: Account[]; categories: Category[]; transactions: Transaction[]
-  debts: Loan[]; receivables: Loan[]; budgets: Budget[]; goals: Goal[]
+  debts: Loan[]; receivables: Loan[]; budgets: Budget[]; goals: Goal[]; recurring: Recurring[]
 }
-const EMPTY: Store = { accounts: [], categories: [], transactions: [], debts: [], receivables: [], budgets: [], goals: [] }
+const EMPTY: Store = { accounts: [], categories: [], transactions: [], debts: [], receivables: [], budgets: [], goals: [], recurring: [] }
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
@@ -37,6 +40,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [store, setStore] = useState<Store>(EMPTY)
   const [loadedCount, setLoadedCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [recurringBlocked, setRecurringBlocked] = useState(false)
 
   useEffect(() => {
     if (!uid) return
@@ -54,7 +58,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
             seedCategories(uid).catch(() => setError('No pudimos crear tus categorías.'))
           }
         },
-        () => setError('No pudimos cargar tus datos. Revisa tu conexión.'),
+        () => {
+          // Aunque una lista falle, la app no se queda cargando para siempre
+          loaded.add(name)
+          setLoadedCount(loaded.size)
+          if (name === 'recurring') setRecurringBlocked(true) // reglas de Firebase sin actualizar: solo afecta pagos fijos
+          else setError('No pudimos cargar tus datos. Revisa tu conexión.')
+        },
       ),
     )
     return () => {
@@ -80,12 +90,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
       accounts,
       loading: !!uid && loadedCount < NAMES.length,
       error,
+      recurringBlocked,
       balances,
       totalBalance,
       categoryById: (id) => (id ? cats.get(id) : undefined),
       accountById: (id) => (id ? accs.get(id) : undefined),
     }
-  }, [store, loadedCount, error, uid])
+  }, [store, loadedCount, error, uid, recurringBlocked])
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>
 }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AlertCircle, AlertTriangle, BellOff, Lightbulb, Settings2 } from 'lucide-react'
 import { Modal } from '../components/ui/Modal'
 import { useData } from './DataContext'
+import { usePrivacy } from './PrivacyContext'
 import { computeAlerts, DEFAULT_ALERT_PREFS, type AlertLevel, type AlertPrefs, type AppAlert } from '../utils/alerts'
 import { todayStr } from '../utils/format'
 import { cn } from '../utils/cn'
@@ -41,6 +42,7 @@ export const LEVEL_STYLE: Record<AlertLevel, { icon: typeof AlertCircle; cls: st
 
 export function AlertsProvider({ children }: { children: ReactNode }) {
   const data = useData()
+  const { hidden } = usePrivacy() // los textos de las alertas incluyen montos
   const navigate = useNavigate()
   const [dismissed, setDismissed] = useState<string[]>(() => loadList(DISMISSED_KEY))
   const [prefs, setPrefsState] = useState<AlertPrefs>(() => {
@@ -49,7 +51,8 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
   })
   const [panel, setPanel] = useState(false)
 
-  const all = useMemo(() => (data.loading ? [] : computeAlerts({ ...data, today: todayStr(), prefs })), [data, prefs])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- hidden cambia cómo se formatean los montos
+  const all = useMemo(() => (data.loading ? [] : computeAlerts({ ...data, today: todayStr(), prefs })), [data, prefs, hidden])
   const alerts = useMemo(() => all.filter((a) => !dismissed.includes(a.id)), [all, dismissed])
 
   const dismiss = useCallback((id: string) => setDismissed((d) => {
