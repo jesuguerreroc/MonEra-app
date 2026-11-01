@@ -35,8 +35,10 @@ export function occurrencesBetween(r: Recurring, from: string, to: string): stri
   return out.filter((d) => d >= start && d <= to)
 }
 
-export function nextOccurrence(r: Recurring, today: string): string | undefined {
-  return occurrencesBetween(r, today, shiftDay(today, 400))[0]
+/** Próxima fecha desde `today`; con `txIds` salta las que ya se pagaron por adelantado u omitieron */
+export function nextOccurrence(r: Recurring, today: string, txIds?: Set<string>): string | undefined {
+  const dates = occurrencesBetween(r, today, shiftDay(today, 400))
+  return txIds ? dates.find((d) => !txIds.has(recurringTxId(r, d)) && !r.skipped.includes(d)) : dates[0]
 }
 
 export interface RecurringItem {

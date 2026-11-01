@@ -3,11 +3,12 @@ import { recurringTxId } from '../utils/recurring'
 import { shiftDay } from '../utils/format'
 import type { Recurring } from '../types'
 
-/** Registra el pago fijo de esa fecha como un movimiento normal (con id fijo: nunca se duplica). */
-export async function registerOccurrence(uid: string, r: Recurring, date: string, amount: number, accountId = r.accountId) {
+/** Registra el pago fijo de esa fecha como un movimiento normal (con id fijo: nunca se duplica).
+ *  `paidOn` es el día real del movimiento: si se pagó por adelantado, hoy en vez de la fecha programada. */
+export async function registerOccurrence(uid: string, r: Recurring, date: string, amount: number, accountId = r.accountId, paidOn = date) {
   await saveItem(uid, 'transactions', {
     id: recurringTxId(r, date),
-    type: r.type, amount, accountId, date,
+    type: r.type, amount, accountId, date: paidOn,
     description: r.name.slice(0, 120),
     ...(r.type === 'transfer' ? { toAccountId: r.toAccountId } : { categoryId: r.categoryId }),
     recurringId: r.id, occurrence: date,

@@ -69,7 +69,7 @@ export default function RecurringPage() {
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {sorted.map((r) => {
                 const cat = categoryById(r.categoryId)
-                const next = nextOccurrence(r, shiftDay(today, 1))
+                const next = nextOccurrence(r, shiftDay(today, 1), txIds)
                 const upToDate = isUpToDate(r, txIds, today)
                 return (
                   <button key={r.id} onClick={() => setForm({ editing: r })} className="text-left min-w-0">

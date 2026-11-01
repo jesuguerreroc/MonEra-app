@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeftRight, CalendarClock } from 'lucide-react'
+import { ArrowLeftRight, CalendarClock, CheckCircle2 } from 'lucide-react'
 import { Card, SectionTitle } from '../ui/Card'
 import { Button } from '../ui/Button'
 import { Field, inputCls } from '../ui/Field'
@@ -25,19 +25,24 @@ export function PayRecurringModal({ item, onClose }: { item: RecurringItem; onCl
   const [accountId, setAccountId] = useState(r.accountId)
   const [saving, setSaving] = useState(false)
   const prev = lastAmount(r, transactions)
+  const today = todayStr()
+  const early = date > today
 
   async function save() {
     if (!user) return
     if (amount <= 0) return toast('Escribe el monto', 'error')
     setSaving(true)
-    try { await registerOccurrence(user.uid, r, date, amount, accountId); toast(`${r.name} registrado`); onClose() }
+    try { await registerOccurrence(user.uid, r, date, amount, accountId, early ? today : date); toast(`${r.name} registrado`); onClose() }
     catch { toast('No pudimos registrarlo.', 'error'); setSaving(false) }
   }
 
   return (
     <Modal open onClose={onClose} title={`Registrar ${r.name}`}>
       <div className="space-y-4">
-        <p className="text-sm text-muted">Pago del {formatDateShort(date)}{r.variable && prev ? ` · La última vez fueron ${formatCOP(prev)}` : ''}</p>
+        <p className="text-sm text-muted">
+          {early ? `Programado para el ${formatDateShort(date)} · se registra como pagado hoy` : `Pago del ${formatDateShort(date)}`}
+          {r.variable && prev ? ` · La última vez fueron ${formatCOP(prev)}` : ''}
+        </p>
         <MoneyInput big autoFocus value={amount} onChange={setAmount} />
         {r.type !== 'transfer' && (
           <Field label={r.type === 'income' ? 'Cuenta donde llegó' : 'Cuenta con la que pagaste'}>
@@ -70,6 +75,15 @@ export function RecurringRow({ item, onPay }: { item: RecurringItem; onPay: (i: 
     catch { toast('No pudimos registrarlo.', 'error') }
     finally { setBusy(false) }
   }
+  /** Ya lo pagaste antes de la fecha: queda registrado hoy y esa fecha deja de salir como pendiente */
+  async function payEarly() {
+    if (!user) return
+    if (r.variable) return onPay(item)
+    setBusy(true)
+    try { await registerOccurrence(user.uid, r, date, r.amount, r.accountId, todayStr()); toast(`${r.name} marcado como pagado`) }
+    catch { toast('No pudimos registrarlo.', 'error') }
+    finally { setBusy(false) }
+  }
   async function skip() {
     if (!user) return
     try { await skipOccurrence(user.uid, r, date); toast(`${r.name}: omitido esta vez`) }
@@ -98,6 +112,13 @@ export function RecurringRow({ item, onPay }: { item: RecurringItem; onPay: (i: 
           <Button variant="ghost" onClick={skip} className="!min-h-10 flex-1 sm:flex-none text-muted">Omitir</Button>
           {!r.variable && <Button variant="soft" onClick={() => onPay(item)} className="!min-h-10 flex-1 sm:flex-none">Cambiar</Button>}
           <Button onClick={quickPay} loading={busy} className="!min-h-10 flex-1 sm:flex-none">{r.variable ? 'Escribir monto' : 'Registrar'}</Button>
+        </div>
+      )}
+      {state === 'upcoming' && (
+        <div className="flex sm:shrink-0">
+          <Button variant="soft" onClick={payEarly} loading={busy} className="!min-h-10 flex-1 sm:flex-none">
+            <CheckCircle2 size={16} />Pagado
+          </Button>
         </div>
       )}
     </li>
