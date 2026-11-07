@@ -14,10 +14,10 @@
  *   users/{uid}.telegram    → { chatId, username, linkedAt }   para que la app muestre "Conectado"
  */
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
-import { AggregateField, FieldValue, getFirestore, type Query } from 'firebase-admin/firestore'
+import { FieldValue, getFirestore } from 'firebase-admin/firestore'
 import type { Account, Category, Transaction, TransactionType } from '../../src/types'
 import { draftMissing, parseQuickEntry, type QuickDraft } from '../../src/utils/quickEntry'
-import { expensesByCategory, monthTotals } from '../../src/utils/finance'
+import { accountBalance, expensesByCategory, monthTotals } from '../../src/utils/finance'
 import { formatCOP, friendlyDate, monthKey, monthLabel, shiftMonth, todayStr } from '../../src/utils/format'
 
 // ---------- Configuración ----------
@@ -120,20 +120,19 @@ async function recentTxs(uid: string, n: number): Promise<Transaction[]> {
   return snap.docs.map((d) => ({ ...d.data(), id: d.id }) as Transaction)
 }
 
-/**
- * Saldo de una cuenta sin descargar todos los movimientos: Firestore suma en el servidor
- * (cada suma cuesta 1 lectura por cada 1.000 movimientos). Misma fórmula que accountBalance().
- */
+/** Saldo de todas las cuentas, con la misma fórmula de la app (solo trae los 4 campos que hacen falta) */
+async function balancesOf(uid: string, accounts: Account[]): Promise<number[]> {
+  const snap = await userRef(uid).collection('transactions').select('type', 'amount', 'accountId', 'toAccountId').get()
+  const txs = snap.docs.map((d) => d.data() as Transaction)
+  return accounts.map((a) => accountBalance(a, txs))
+}
+
+/** Saldo de una sola cuenta: solo lee los movimientos que la tocan (consultas simples, sin índices extra) */
 async function balanceOf(uid: string, a: Account): Promise<number> {
   const col = userRef(uid).collection('transactions')
-  const sum = async (q: Query) => (await q.aggregate({ s: AggregateField.sum('amount') }).get()).data().s ?? 0
-  const [inc, exp, out, inn] = await Promise.all([
-    sum(col.where('accountId', '==', a.id).where('type', '==', 'income')),
-    sum(col.where('accountId', '==', a.id).where('type', '==', 'expense')),
-    sum(col.where('accountId', '==', a.id).where('type', '==', 'transfer')),
-    sum(col.where('toAccountId', '==', a.id).where('type', '==', 'transfer')),
-  ])
-  return a.initialBalance + inc - exp - out + inn
+  const [from, to] = await Promise.all([col.where('accountId', '==', a.id).get(), col.where('toAccountId', '==', a.id).get()])
+  const byId = new Map([...from.docs, ...to.docs].map((d) => [d.id, d.data() as Transaction]))
+  return accountBalance(a, [...byId.values()])
 }
 
 // ---------- Textos ----------
@@ -246,7 +245,10 @@ async function link(chatId: number, from: TgUser | undefined, rawCode: string) {
   })
 
   if (!result) return send(chatId, 'Ese código ya se usó o venció (duran 10 minutos). Genera uno nuevo en la app: <b>Configuración → Telegram</b>.')
-  return send(chatId, `✅ ¡Listo${from?.first_name ? `, ${esc(from.first_name)}` : ''}! Tu cuenta de Monera quedó conectada.\n\n${HELP}`)
+  // Solo saluda por el nombre si tiene letras (hay quien se pone "." en Telegram)
+  const name = from?.first_name?.trim()
+  const hello = name && /\p{L}/u.test(name) ? `, ${esc(name)}` : ''
+  return send(chatId, `✅ ¡Listo${hello}! Tu cuenta de Monera quedó conectada.\n\n${HELP}`)
 }
 
 // ---------- Mensajes ----------
@@ -308,7 +310,7 @@ async function cmdBalance(chatId: number, chat: ChatDoc) {
   const { accounts } = await loadBasics(chat.uid)
   const active = accounts.filter((a) => a.active)
   if (!active.length) return send(chatId, 'Aún no tienes cuentas. Créalas en la app.')
-  const balances = await Promise.all(active.map((a) => balanceOf(chat.uid, a)))
+  const balances = await balancesOf(chat.uid, active)
   const total = balances.reduce((s, b) => s + b, 0)
   const lines = active.map((a, i) => `• ${esc(a.name)}: <b>${formatCOP(balances[i])}</b>`)
   return send(chatId, ['🏦 <b>Tus cuentas</b>', '', ...lines, '', `<b>Total: ${formatCOP(total)}</b>`].join('\n'))
@@ -440,11 +442,11 @@ async function onCallback(cb: TgCallback) {
       })
       if (!saved) return answer('Ya estaba guardado.')
       await answer('Guardado ✅')
+      // El movimiento ya está guardado: si el saldo no se puede calcular, igual se confirma
       const account = userData.accounts.find((a) => a.id === tx.accountId)!
-      const balance = await balanceOf(chat.uid, account)
-      return edit(chatId, messageId,
-        draftText(draft, userData, `✅ <b>Guardado</b> · saldo de ${esc(account.name)}: <b>${formatCOP(balance)}</b>`),
-        [[{ text: '↩️ Deshacer', callback_data: `undo:${ref.id}` }]])
+      const balance = await balanceOf(chat.uid, account).catch((e) => { console.error(e); return null })
+      const note = `✅ <b>Guardado</b>${balance === null ? '' : ` · saldo de ${esc(account.name)}: <b>${formatCOP(balance)}</b>`}`
+      return edit(chatId, messageId, draftText(draft, userData, note), [[{ text: '↩️ Deshacer', callback_data: `undo:${ref.id}` }]])
     }
     case 'no':
       await chatRef(chatId).update({ pending: FieldValue.delete() })
