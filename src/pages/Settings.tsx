@@ -7,6 +7,7 @@ import { PageHeader } from '../components/ui/PageHeader'
 import { CategoryModal } from '../components/accounts/CategoryForm'
 import { InstallCard } from '../components/ui/InstallApp'
 import { AlertsSettings } from '../components/alerts/AlertsUI'
+import { TelegramCard } from '../components/telegram/TelegramCard'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
@@ -79,6 +80,8 @@ export default function Settings() {
         </Card>
 
         <AlertsSettings />
+
+        <TelegramCard />
 
         {groups.map((g) => (
           <Card key={g.title}>

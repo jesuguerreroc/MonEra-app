@@ -6,6 +6,12 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Funciones del servidor (bot de Telegram en netlify/functions/telegram.ts).
+# firebase-admin se instala aparte en vez de empaquetarse: tiene archivos que esbuild no sabe juntar.
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["firebase-admin"]
+
 # La app usa rutas del navegador (/cuentas, /reportes…): cualquier ruta
 # debe servir index.html; si no, al recargar una página sale error 404.
 [[redirects]]

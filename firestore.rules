@@ -33,6 +33,22 @@ service cloud.firestore {
       }
     }
 
+    // Bot de Telegram: la app crea un código de un solo uso (10 min) que el bot canjea.
+    // Nadie puede leer códigos; solo el servidor del bot (que no pasa por estas reglas).
+    match /telegramCodes/{code} {
+      allow create: if request.auth != null
+        && code.matches('^[A-Z0-9]{10}$')
+        && request.resource.data.keys().hasOnly(['uid', 'expiresAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.expiresAt is int
+        && request.resource.data.expiresAt < request.time.toMillis() + 1800000;
+    }
+
+    // Chats vinculados: los escribe el bot; desde la app solo puedes ver y desconectar el tuyo
+    match /telegramChats/{chatId} {
+      allow read, delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
     // Todo lo demás está cerrado
   }
 }
